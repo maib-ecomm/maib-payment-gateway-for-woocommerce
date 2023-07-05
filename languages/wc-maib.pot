@@ -1,0 +1,282 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Maib Payment Gateway for WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-25 14:47+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.4; wp-6.1.1\n"
+"X-Domain: wc-maib"
+
+#. Description of the plugin
+msgid ""
+"Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the "
+"Maib Payment Gateway for WooCommerce."
+msgstr ""
+
+#: wc-maib.php:283
+msgid "Add these links to the Project settings in maibmerchants.md"
+msgstr ""
+
+#: wc-maib.php:298
+msgid "Callback URL"
+msgstr ""
+
+#: wc-maib.php:1075
+msgid "Complete Two-Step Payment"
+msgstr ""
+
+#: wc-maib.php:493
+msgid "Complete Two-Step payment failed! Please see Maib Payment Gateway logs."
+msgstr ""
+
+#: wc-maib.php:473
+msgid "Complete Two-Step payment not possible, payment id missing."
+msgstr ""
+
+#: wc-maib.php:224
+msgid ""
+"Connection Settings - <a href=\"https://maibmerchants.md\" target=\"_blank\">"
+"maibmerchants.md</a>"
+msgstr ""
+
+#: wc-maib.php:193
+msgid "Debug mode"
+msgstr ""
+
+#: wc-maib.php:614
+msgid "Default status"
+msgstr ""
+
+#: wc-maib.php:173
+msgid "Description"
+msgstr ""
+
+#: wc-maib.php:210
+msgid "Direct Payment"
+msgstr ""
+
+#: wc-maib.php:205
+msgid ""
+"Direct payment - if the transaction is successful the amount is withdrawn "
+"from the customer account. \n"
+"\t\t\t\t\tTwo-step payment - if the transaction is successful the amount is "
+"just on hold on the customer account, to withdraw the amount use the Order "
+"action: Complete Two-Step Payment."
+msgstr ""
+
+#: wc-maib.php:195
+msgid "Enable logging"
+msgstr ""
+
+#: wc-maib.php:162
+msgid "Enable Maib Payment Gateway"
+msgstr ""
+
+#: wc-maib.php:160
+msgid "Enable/Disable"
+msgstr ""
+
+#: wc-maib.php:293
+msgid "Fail URL"
+msgstr ""
+
+#: wc-maib.php:218
+#, php-format
+msgid ""
+"Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/maib-ecomm"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/maib-ecomm/woocommerce-maib"
+msgstr ""
+
+#: wc-maib.php:238 wc-maib.php:245
+msgid "It is available after Project activation."
+msgstr ""
+
+#: wc-maib.php:231
+msgid "It is available after registration."
+msgstr ""
+
+#. Author of the plugin
+msgid "maib"
+msgstr ""
+
+#. Name of the plugin
+msgid "Maib Payment Gateway for WooCommerce"
+msgstr ""
+
+#: wc-maib.php:288
+msgid "Ok URL"
+msgstr ""
+
+#: wc-maib.php:357
+msgid ""
+"One or more of the required fields (Project ID, Project Secret, Signature "
+"Key) is empty in Maib Payment Gateway settings."
+msgstr ""
+
+#: wc-maib.php:761
+#, php-format
+msgid "Order #%1$s payment failed via %2$s."
+msgstr ""
+
+#: wc-maib.php:871
+#, php-format
+msgid "Order #%1$s payment failed via %2$s. %3$s"
+msgstr ""
+
+#: wc-maib.php:216
+msgid "Order description"
+msgstr ""
+
+#: wc-maib.php:219
+msgid "Order description that the customer will see on the bank payment page."
+msgstr ""
+
+#: wc-maib.php:250
+msgid "Order status"
+msgstr ""
+
+#: wc-maib.php:277
+msgid "Order status when payment failed. By default: Failed."
+msgstr ""
+
+#: wc-maib.php:268
+msgid "Order status when payment on hold. By default: On hold."
+msgstr ""
+
+#: wc-maib.php:170
+msgid "Pay online"
+msgstr ""
+
+#: wc-maib.php:953
+#, php-format
+msgid "Payment (%1$s) failed."
+msgstr ""
+
+#: wc-maib.php:935
+#, php-format
+msgid "Payment (%1$s) on hold."
+msgstr ""
+
+#: wc-maib.php:904
+#, php-format
+msgid "Payment (%1$s) successful."
+msgstr ""
+
+#: wc-maib.php:454
+msgid "Payment already refunded!"
+msgstr ""
+
+#: wc-maib.php:255
+msgid "Payment completed"
+msgstr ""
+
+#: wc-maib.php:273
+msgid "Payment failed"
+msgstr ""
+
+#: wc-maib.php:399
+msgid "Payment initiation failed via maib gateway, please try again later."
+msgstr ""
+
+#: wc-maib.php:175
+msgid "Payment method description that the customer will see during checkout."
+msgstr ""
+
+#: wc-maib.php:168
+msgid "Payment method title that the customer will see during checkout."
+msgstr ""
+
+#: wc-maib.php:229
+msgid "Project ID <span class=\"required\">*</span>"
+msgstr ""
+
+#: wc-maib.php:236
+msgid "Project Secret <span class=\"required\">*</span>"
+msgstr ""
+
+#: wc-maib.php:282
+msgid "Project Settings"
+msgstr ""
+
+#: wc-maib.php:449
+msgid "Refund failed! Please see Maib Payment Gateway logs."
+msgstr ""
+
+#: wc-maib.php:429
+msgid "Refund not possible, payment id missing."
+msgstr ""
+
+#: wc-maib.php:198
+msgid ""
+"Save debug messages to the WooCommerce System Status logs. Note: this may "
+"log personal information. Use this for debugging purposes only and delete "
+"the logs when finished."
+msgstr ""
+
+#: wc-maib.php:1058
+msgid "Settings"
+msgstr ""
+
+#: wc-maib.php:243
+msgid "Signature Key <span class=\"required\">*</span>"
+msgstr ""
+
+#: wc-maib.php:747 wc-maib.php:754 wc-maib.php:783 wc-maib.php:791
+#: wc-maib.php:841
+msgid "Something went wrong on redirect to website! Please contact us."
+msgstr ""
+
+#: wc-maib.php:259
+msgid ""
+"The completed order status after successful payment. By default: Processing."
+msgstr ""
+
+#: wc-maib.php:632
+msgid "This Callback URL works and should not be called directly."
+msgstr ""
+
+#: wc-maib.php:364
+msgid ""
+"This currency is not supported by Maib Payment Gateway. Please choose a "
+"different currency (MDL / EUR / USD)."
+msgstr ""
+
+#: wc-maib.php:166
+msgid "Title"
+msgstr ""
+
+#: wc-maib.php:202
+msgid "Transaction type"
+msgstr ""
+
+#: wc-maib.php:211
+msgid "Two-Step Payment"
+msgstr ""
+
+#: wc-maib.php:264
+msgid "Two-Step Payment authorized"
+msgstr ""
+
+#: wc-maib.php:197
+msgid "View logs"
+msgstr ""
+
+#: wc-maib.php:177
+msgid "Visa / Mastercard / Apple Pay / Google Pay"
+msgstr ""
