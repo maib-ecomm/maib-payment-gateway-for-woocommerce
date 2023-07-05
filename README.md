@@ -22,7 +22,7 @@ In order to make real payments you must make at least one successful transaction
 - Registration on the maibmerchants.md platform
 - WordPress ≥ v. 4.8
 - WooCommerce ≥ v. 3.3
-- PHP ≥ v. 5.6 (with curl and json extensions enabled)
+- PHP ≥ v. 7.2 (with _curl_ and _json_ extensions enabled)
 
 ## Installation
 ### From the WP admin dashboard
