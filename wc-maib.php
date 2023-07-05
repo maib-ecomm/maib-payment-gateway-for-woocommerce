@@ -15,7 +15,7 @@
  * Requires at least: 4.8
  * Tested up to: 6.2.2
  * WC requires at least: 3.3
- * WC tested up to: 7.7.0
+ * WC tested up to: 7.8.2
  */
 
 if (!defined('ABSPATH'))
