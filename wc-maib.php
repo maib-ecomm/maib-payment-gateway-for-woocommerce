@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/maib-ecomm/woocommerce-maib
  * Version: 1.0.0
  * Author: maib
- * Author URI: https://github.com/maib-ecomm
+ * Author URI: https://maib.md
  * Developer: Lupu Constantin
  * Developer URI: https://github.com/kostealupu
  * Text Domain: wc-maib
