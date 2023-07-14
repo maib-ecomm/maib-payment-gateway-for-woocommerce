@@ -329,8 +329,8 @@ function woocommerce_maib_init()
             'email' => $order->get_billing_email(),
             'phone' => substr($order->get_billing_phone(), 0, 40),
             'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
-			'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_ok)),
-			'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_fail)),
+	    'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_ok)),
+	    'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_fail)),
             'callbackUrl'  => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_callback)),
             'items' => $product_items,
              ];
