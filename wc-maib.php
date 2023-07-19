@@ -621,13 +621,13 @@ function woocommerce_maib_init()
 
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
-            //echo "OK";
+            
             if (!isset($data['signature']) || !isset($data['result']))
             {
                 $this->log('Callback URL - Signature or Payment data not found in notification.', 'error');
                 exit();
             }
-
+            echo "ERROR";
             $this->log(sprintf('Notification on Callback URL: %s', wp_json_encode($data, JSON_PRETTY_PRINT)) , 'info');
             $data_result = $data['result']; // Data from "result" object
             $sortedDataByKeys = $this->sortByKeyRecursive($data_result); // Sort an array by key recursively
@@ -642,12 +642,14 @@ function woocommerce_maib_init()
             $order = wc_get_order($order_id);
 
             if ($sign !== $data['signature'])
-            {
+            {   
+		echo "ERROR";
                 $this->log(sprintf('Signature is invalid: %s', $sign) , 'info');
                 $order->add_order_note('Callback Signature is invalid!');
                 exit();
             }
 
+	    echo "OK";
             $this->log(sprintf('Signature is valid: %s', $sign) , 'info');
 
             if (!$order_id || !$status)
