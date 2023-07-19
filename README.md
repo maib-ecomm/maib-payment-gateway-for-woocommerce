@@ -48,7 +48,7 @@ In order to make real payments you must make at least one successful transaction
 8. **Project Secret** - Project Secret from maibmerchants.md. It is available after project activation.
 9. **Signature Key** - Signature Key for validating notifications on Callback URL. It is available after project activation.
 10. **Order status: Payment completed** - The completed order status after successful payment. By default: Processing.
-11. **Order status: Two-Step Payment authorized** - Order status if the transaction is successfully authorized. Default: On hold.
+11. **Order status: Two-Step Payment authorized** - Order status if the transaction is successfully authorized. By default: On hold.
 12. **Order status: Payment failed** - Order status when payment failed. By default: Failed.
 13. **Project Settings** - Add links for Ok URL / Fail URL / Callback URL in the respective fields of the Project settings in maibmerchants.md.  
 
