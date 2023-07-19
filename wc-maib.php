@@ -742,7 +742,7 @@ function woocommerce_maib_init()
 
             if (!$order->has_status('pending'))
             {
-                $message = sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-maib') , $order_id, $this->method_title); // to do statusMessage
+                $message = sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-maib') , $order_id, $this->method_title);
                 $this->log($message, 'notice');
                 wc_add_notice($message, 'error');
                 wp_safe_redirect($order->get_checkout_payment_url());
