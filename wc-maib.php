@@ -325,7 +325,7 @@ function woocommerce_maib_init()
             'language' => self::get_language(),
             'description' => substr($this->get_order_description($order), 0, 124),
             'orderId' => strval($order->get_id()),
-            'client_name' => $client_name,
+            'clientName' => $client_name,
             'email' => $order->get_billing_email(),
             'phone' => substr($order->get_billing_phone(), 0, 40),
             'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
