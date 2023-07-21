@@ -52,4 +52,15 @@ In order to make real payments you must make at least one successful transaction
 12. **Order status: Payment failed** - Order status when payment failed. By default: Failed.
 13. **Project Settings** - Add links for Ok URL / Fail URL / Callback URL in the respective fields of the Project settings in maibmerchants.md.  
 
+### Troubleshooting
+To enable the debug option, go to the settings page. 
+
+If you require further assistance, please don't hesitate to contact the maib ecommerce support team by sending an email to ecom@maib.md. 
+
+In your email, make sure to include the following information:
+- Merchant name
+- Project ID
+- Date and time of the transaction with errors
+- Error from log file
+
 
