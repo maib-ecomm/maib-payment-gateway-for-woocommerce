@@ -54,7 +54,7 @@ function woocommerce_maib_init()
         #region Constants
         const MOD_ID = 'maib';
         const MOD_TITLE = 'Maib Payment Gateway';
-        const MOD_DESC = 'Visa / Mastercard / Apple Pay / Google Pay';
+        const MOD_DESC = 'Pay online (Visa / Mastercard / Apple Pay / Google Pay)';
         const MOD_PREFIX = 'maib_';
 
         const TRANSACTION_TYPE_CHARGE = 'direct';
@@ -387,7 +387,7 @@ function woocommerce_maib_init()
             update_post_meta($order_id, '_transaction_id', $response->payId);
             self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
 
-            $order->add_order_note('maib Payment ID: <br>' . $response->payId);
+            $order->add_order_note('maib payment ID: <br>' . $response->payId);
             $redirect_to = $response->payUrl;
 
             $this->log(sprintf('Order id: %d, redirecting user to maib gateway: %s', $order_id, $redirect_to) , 'notice');
@@ -687,7 +687,7 @@ function woocommerce_maib_init()
                 $this->payment_failed($order, $pay_id);
             }
 
-            $order_note = sprintf('maib transaction details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
+            $order_note = sprintf('maib payment details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
             $order->add_order_note($order_note);
 
             exit();
@@ -849,7 +849,7 @@ function woocommerce_maib_init()
                 }
 
                 wp_safe_redirect($this->get_safe_return_url($order));
-				$order_note = sprintf('maib transaction details: %s', wp_json_encode($response, JSON_PRETTY_PRINT));
+				$order_note = sprintf('maib payment details: %s', wp_json_encode($response, JSON_PRETTY_PRINT));
 				$order->add_order_note($order_note);
                 exit();
             }
