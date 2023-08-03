@@ -8,6 +8,10 @@ Immediately after registration, you will be able to make payments in the test en
 
 In order to make real payments you must make at least one successful transaction in the test environment and complete the necessary steps to activate the Production Project.
 
+## Steps to activate the Production Project
+1. Profil Activation in maibmerchants
+2. E-commerce contract 
+
 ## Functional
 1. **Two types of payments** (depending on your Project settings):
 
