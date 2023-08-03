@@ -1,6 +1,6 @@
 [![N|Solid](https://www.maib.md/images/logo.svg)](https://www.maib.md)
-#  Maib Payment Gateway for WooCommerce
-Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway for WooCommerce
+#  Maib Payment Gateway Plugin for WooCommerce
+Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway Plugin for WooCommerce
 
 ## Description
 To be able to use this plugin you must be registered on the [maibmerchants.md](https://maibmerchants.md) platform.
