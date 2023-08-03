@@ -1,3 +1,4 @@
+[![N|Solid](https://www.maib.md/images/logo.svg)](https://www.maib.md)
 #  Maib Payment Gateway for WooCommerce
 Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway for WooCommerce
 
