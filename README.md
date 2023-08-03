@@ -8,19 +8,20 @@ Immediately after registration, you will be able to make payments in the test en
 
 In order to make real payments you must make at least one successful transaction in the test environment and complete the necessary steps to activate the Production Project.
 
-## Steps to activate the Production Project
+### Steps to activate the Production Project
 1. Profil Activation in maibmerchants
-2. E-commerce contract 
+2. Merchant/maib e-commerce contract 
 
 ## Functional
-1. **Two types of payments** (depending on your Project settings):
+**Two types of payments** (depending on your Project settings):
 
-  *Direct payments* - if the transaction is successful the amount is withdrawn from the customer's account.
+  *- Direct payments* - if the transaction is successful the amount is withdrawn from the customer's account.
 
-  *Two-step payments* - if the transaction is successful, the amount is only blocked on the customer's account (authorized transaction), in order to withdraw the amount, you will need to complete the transaction from the created order using the Action: Finish two-step payment.
+  *- Two-step payments* - if the transaction is successful, the amount is only blocked on the customer's account (authorized transaction), in order to withdraw the amount, you will need to complete the transaction from the created order using the action _Finish two-step payment_.
 
-2. **Three currencies** (depending on your Project settings): MDL / USD / EUR.
-3. **Payment refund** - through the standard WooCommerce refund function from the created order (see screenshot). The amount returned may be less than or equal to the transaction amount. The return action is possible only once for each successful transaction.
+**Three currencies**: MDL / USD / EUR (depending on your Project settings).
+
+**Payment refund** - through the standard WooCommerce refund function from the created order (see screenshot). The amount returned may be less than or equal to the transaction amount. The return action is possible only once for each successful transaction.
 
 ## Requirements
 - Registration on the maibmerchants.md platform
@@ -41,7 +42,7 @@ In order to make real payments you must make at least one successful transaction
 3. Upload the plugin folder (eg via FTP) to the _/wp-content/plugins/_ directory.
 4. Go to the **Plugins** menu and activate the plugin.
 
-### Settings
+## Settings
 1. **Enable/Disable** Maib Payment Gateway method
 2. **Title** - Title of the payment method displayed to the customer on the checkout page.
 3. **Description** - Description of the payment method displayed to the customer on the checkout page.
@@ -56,7 +57,7 @@ In order to make real payments you must make at least one successful transaction
 12. **Order status: Payment failed** - Order status when payment failed. By default: Failed.
 13. **Project Settings** - Add links for Ok URL / Fail URL / Callback URL in the respective fields of the Project settings in maibmerchants.md.  
 
-### Troubleshooting
+## Troubleshooting
 To enable the debug option, go to the settings page. 
 
 If you require further assistance, please don't hesitate to contact the maib ecommerce support team by sending an email to ecom@maib.md. 
@@ -66,5 +67,3 @@ In your email, make sure to include the following information:
 - Project ID
 - Date and time of the transaction with errors
 - Error from log file
-
-
