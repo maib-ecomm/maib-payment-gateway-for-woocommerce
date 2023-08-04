@@ -59,9 +59,9 @@ Pentru a efectua plăți reale trebuie să efectuați cel puțin o tranzacție r
 4. Mod depanare - Activarea înregistrării mesajelor cu erori în sistemul de Jurnale WooCommerce. Pentru a vedea mesajele de depanare accesați _Vezi jurnalele_ și alegeți fișierul _maib_gateway__ cu data pentru care doriți să vedeți mesajele.
 5. Tipul plăților - Plăți directe sau Plăți în 2 etape.
 6. Descrierea comenzii - Informația despre comandă afișată Cumpărătorului pe pagina băncii de introducere a datelor cardului.
-7. Project ID - Project ID al Proiectului în maibmerchants.
-8. Project Secret - Este disponibil după activarea Proiectului în maibmerchants.md
-9. Signature Key - Pentru validarea notificărilor cu starea tranzacțiilor pe Callback URL. Este disponibil după activarea Proiectului în maibmerchants.
+7. Project ID - ID-ul proiectului în maibmerchants.
+8. Project Secret - Parola proiectului în maibmerchants. Este disponibil după activarea Proiectului.
+9. Signature Key - Cheia semnăturii pentru validarea notificărilor cu starea tranzacțiilor pe Callback URL. Este disponibil după activarea Proiectului în maibmerchants.
 10. Starea comenzii: Plată cu succes - Starea comenzii dacă tranzacția s-a finalizat cu succes. Implicit: În procesare.
 11. Starea comenzii: Plată în 2 etape autorizată - Starea comenzii dacă tranzacția este autorizată cu succes. Implicit: În așteptare.
 12. Starea comenzii: Plată eșuată - Starea comenzii dacă tranzacția a eșuat. Implicit: Eșuată.
