@@ -1,3 +1,5 @@
+[![N|Solid](https://www.maib.md/images/logo.svg)](https://www.maib.md)
+
 #  Maib Payment Gateway Plugin for WooCommerce
 Acest plugin vă permite să integrați magazinul dvs. online cu noul API e-commerce de la **maib** pentru a accepta plăți online (Visa / Mastercard / Google Pay / Apple Pay).
 
