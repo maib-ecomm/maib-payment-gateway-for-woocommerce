@@ -54,7 +54,7 @@ Pentru a efectua plăți reale trebuie să efectuați cel puțin o tranzacție r
 1. Activare/Dezactivare
 2. Denumire - Denumirea Metodei de plată afișată Cumpărătorului pe pagina de Checkout.
 3. Descriere - Descrierea Metodei de plată afișată Cumpărătorului pe pagina de Checkout.
-4. Mod depanare - Activarea înregistrării mesajelor cu erori în sistemul de Jurnale WooCommerce. Pentru a vedea mesajele de depanare accesați "Vezi jurnalele" și alegeți fișierul maib_gateway_ cu data pentru care doriți să vedeți mesajele.
+4. Mod depanare - Activarea înregistrării mesajelor cu erori în sistemul de Jurnale WooCommerce. Pentru a vedea mesajele de depanare accesați _Vezi jurnalele_ și alegeți fișierul _maib_gateway__ cu data pentru care doriți să vedeți mesajele.
 5. Tipul plăților - Plăți directe sau Plăți în 2 etape.
 6. Descrierea comenzii - Informația despre comandă afișată Cumpărătorului pe pagina băncii de introducere a datelor cardului.
 7. Project ID - Project ID al Proiectului în maibmerchants.
