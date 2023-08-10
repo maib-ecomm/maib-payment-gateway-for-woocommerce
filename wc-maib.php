@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.2.2
+ * Tested up to: 6.3
  * WC requires at least: 3.3
- * WC tested up to: 7.7.0
+ * WC tested up to: 8.0.1
  */
 
 if (!defined('ABSPATH'))
