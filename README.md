@@ -11,7 +11,7 @@ In order to make real payments you must make at least one successful transaction
 
 ### Steps to activate the Production Project
 1. Completed Profile
-2. Profile Validation
+2. Validated Profile
 3. E-commerce contract 
 
 ## Functional
