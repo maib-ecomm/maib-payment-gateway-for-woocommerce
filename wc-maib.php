@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/maib-ecomm/woocommerce-maib
  * Version: 1.0.0
  * Author: maib
- * Author URI: https://maib.md
+ * Author URI: https://github.com/maib-ecomm
  * Developer: Lupu Constantin
  * Developer URI: https://github.com/kostealupu
  * Text Domain: wc-maib
@@ -15,7 +15,7 @@
  * Requires at least: 4.8
  * Tested up to: 6.2.2
  * WC requires at least: 3.3
- * WC tested up to: 7.8.2
+ * WC tested up to: 7.7.0
  */
 
 if (!defined('ABSPATH'))
@@ -54,7 +54,7 @@ function woocommerce_maib_init()
         #region Constants
         const MOD_ID = 'maib';
         const MOD_TITLE = 'Maib Payment Gateway';
-        const MOD_DESC = 'Pay online (Visa / Mastercard / Apple Pay / Google Pay)';
+        const MOD_DESC = 'Visa / Mastercard / Apple Pay / Google Pay';
         const MOD_PREFIX = 'maib_';
 
         const TRANSACTION_TYPE_CHARGE = 'direct';
@@ -77,7 +77,11 @@ function woocommerce_maib_init()
         public static $log = false;
 
         protected $logo_type, $debug, $transaction_type, $order_template;
-        protected $maib_project_id, $maib_project_secret, $maib_signature_key, $completed_order_status, $hold_order_status, $failed_order_status;
+        protected $maib_project_id, $maib_project_secret, $maib_signature_key;
+        protected $completed_order_status, $hold_order_status, $failed_order_status;
+        protected $transient_token_key = 'maib_access_token';
+        protected $transient_refresh_key = 'maib_refresh_token';
+
 
         public function __construct()
         {
@@ -121,14 +125,28 @@ function woocommerce_maib_init()
             $this->init_settings();
             #endregion
 			
-            if (is_admin()) add_action('woocommerce_update_options_payment_gateways_' . $this->id, array(
-                $this,
-                'process_admin_options'
-            ));
+            if (is_admin()) {
+                add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+                add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'clear_transients'));
+            }
 
             add_action('woocommerce_api_' . $this->route_return_ok, [$this, 'route_return_ok']);
             add_action('woocommerce_api_' . $this->route_return_fail, [$this, 'route_return_fail']);
             add_action('woocommerce_api_' . $this->route_callback, [$this, 'route_callback']);
+
+        }
+
+        /**
+        * Clear acess token transients when settings saved
+        */
+        public function clear_transients()
+        {
+
+            delete_transient($this->transient_token_key);
+            delete_transient($this->transient_refresh_key);
+
+            // Save the new settings
+            $this->process_admin_options();
         }
 
         /**
@@ -329,8 +347,8 @@ function woocommerce_maib_init()
             'email' => $order->get_billing_email(),
             'phone' => substr($order->get_billing_phone(), 0, 40),
             'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
-	    'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_ok)),
-	    'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_fail)),
+			'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_ok)),
+			'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_fail)),
             'callbackUrl'  => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_callback)),
             'items' => $product_items,
              ];
@@ -387,7 +405,7 @@ function woocommerce_maib_init()
             update_post_meta($order_id, '_transaction_id', $response->payId);
             self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
 
-            $order->add_order_note('maib payment ID: <br>' . $response->payId);
+            $order->add_order_note('maib Payment ID: <br>' . $response->payId);
             $redirect_to = $response->payUrl;
 
             $this->log(sprintf('Order id: %d, redirecting user to maib gateway: %s', $order_id, $redirect_to) , 'notice');
@@ -521,70 +539,49 @@ function woocommerce_maib_init()
          */
         public function get_access_token()
         {
-            $transient_token_key = 'maib_access_token';
-            $transient_refresh_key = 'maib_refresh_token';
+            $access_token = get_transient($this->transient_token_key);
+            $refresh_token = get_transient($this->transient_refresh_key);
 
-            $access_token = get_transient($transient_token_key);
-            $refresh_token = get_transient($transient_refresh_key);
-
-            if (false === $access_token)
-            {
-                if (false === $refresh_token)
-                {
-                    $this->log('Request to maib API: Get token with Project ID / Secret', 'info');
-
-                    try
-                    {
-                        $response = MaibAuthRequest::create()->generateToken($this->maib_project_id, $this->maib_project_secret);
-                        $this->log(sprintf('Get access token from maib API with Project ID / Secret: %s', wp_json_encode($response, JSON_PRETTY_PRINT)) , 'info');
-                    }
-                    catch(Exception $ex)
-                    {
-                        $this->log($ex, 'error');
-                    }
-
-                    if ($response && isset($response->accessToken, $response->expiresIn))
-                    {
-                        set_transient($transient_token_key, $response->accessToken, $response->expiresIn);
-                        set_transient($transient_refresh_key, $response->refreshToken, $response->refreshExpiresIn);
-
-                        $access_token = $response->accessToken;
-                    }
-                    else
-                    {
-                        $this->log('API did not return an access_token.', 'critical');
-                    }
-
+            if (false === $access_token) {
+                if (false === $refresh_token) {
+                    $this->log('Request to maib API: Get access token with Project ID / Secret', 'info');
+                    $response = $this->generateAccessToken($this->maib_project_id, $this->maib_project_secret);
+                } else {
+                    $this->log('Request to maib API: Get access token with refresh token', 'info');
+                    $response = $this->generateAccessToken($refresh_token);
                 }
-                else
-                {
-                    $this->log('Request to maib API: Get token with refresh token', 'info');
 
-                    try
-                    {
-                        $response = MaibAuthRequest::create()->generateToken($refresh_token);
-                        $this->log(sprintf('Get access token from maib API with refresh token: %s', wp_json_encode($response, JSON_PRETTY_PRINT)) , 'info');
-                    }
-                    catch(Exception $ex)
-                    {
-                        $this->log($ex, 'error');
-                    }
-
-                    if ($response && isset($response->accessToken, $response->expiresIn))
-                    {
-                        set_transient($transient_token_key, $response->accessToken, $response->expiresIn);
-                        set_transient($transient_refresh_key, $response->refreshToken, $response->refreshExpiresIn);
-
-                        $access_token = $response->accessToken;
-                    }
-                    else
-                    {
-                        $this->log('API did not return an access_token.', 'critical');
-                    }
+                if ($response && isset($response->accessToken, $response->expiresIn)) {
+                    set_transient($this->transient_token_key, $response->accessToken, $response->expiresIn);
+                    set_transient($this->transient_refresh_key, $response->refreshToken, $response->refreshExpiresIn);
+                    $access_token = $response->accessToken;
+                } else {
+                    $this->log('API did not return an access token.', 'critical');
                 }
+            } else {
+                $this->log('Get access token from cache', 'info');
             }
 
             return $access_token;
+        }
+
+        /**
+         * Generate access token from maib API.
+         */
+        private function generateAccessToken($projectIdOrRefreshToken, $projectSecret = null)
+        {
+            try {
+                if ($projectSecret !== null) {
+                    $response = MaibAuthRequest::create()->generateToken($projectIdOrRefreshToken, $projectSecret);
+                } else {
+                    $response = MaibAuthRequest::create()->generateToken($projectIdOrRefreshToken);
+                }
+                $this->log('Access token generated successfully.', 'info');
+                return $response;
+            } catch (Exception $ex) {
+                $this->log($ex, 'error');
+                return null;
+            }
         }
 
         /**
@@ -627,7 +624,7 @@ function woocommerce_maib_init()
                 $this->log('Callback URL - Signature or Payment data not found in notification.', 'error');
                 exit();
             }
-            echo "ERROR";
+            
             $this->log(sprintf('Notification on Callback URL: %s', wp_json_encode($data, JSON_PRETTY_PRINT)) , 'info');
             $data_result = $data['result']; // Data from "result" object
             $sortedDataByKeys = $this->sortByKeyRecursive($data_result); // Sort an array by key recursively
@@ -642,14 +639,14 @@ function woocommerce_maib_init()
             $order = wc_get_order($order_id);
 
             if ($sign !== $data['signature'])
-            {   
-		echo "ERROR";
+            {    
+                echo "ERROR";
                 $this->log(sprintf('Signature is invalid: %s', $sign) , 'info');
                 $order->add_order_note('Callback Signature is invalid!');
                 exit();
             }
-
-	    echo "OK";
+            
+            echo "OK";
             $this->log(sprintf('Signature is valid: %s', $sign) , 'info');
 
             if (!$order_id || !$status)
@@ -687,7 +684,7 @@ function woocommerce_maib_init()
                 $this->payment_failed($order, $pay_id);
             }
 
-            $order_note = sprintf('maib payment details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
+            $order_note = sprintf('maib transaction details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
             $order->add_order_note($order_note);
 
             exit();
@@ -744,7 +741,7 @@ function woocommerce_maib_init()
 
             if (!$order->has_status('pending'))
             {
-                $message = sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-maib') , $order_id, $this->method_title);
+                $message = sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-maib') , $order_id, $this->method_title); // to do statusMessage
                 $this->log($message, 'notice');
                 wc_add_notice($message, 'error');
                 wp_safe_redirect($order->get_checkout_payment_url());
@@ -849,7 +846,7 @@ function woocommerce_maib_init()
                 }
 
                 wp_safe_redirect($this->get_safe_return_url($order));
-				$order_note = sprintf('maib payment details: %s', wp_json_encode($response, JSON_PRETTY_PRINT));
+				$order_note = sprintf('maib transaction details: %s', wp_json_encode($response, JSON_PRETTY_PRINT));
 				$order->add_order_note($order_note);
                 exit();
             }
@@ -1086,7 +1083,10 @@ function woocommerce_maib_init()
         {
             return class_exists('WooCommerce');
         }
-        #endregion        
+        #endregion
+        
+
+        
     }
 
     if (!WC_Maib::is_wc_active()) return;
