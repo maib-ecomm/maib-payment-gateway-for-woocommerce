@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.3
+ * Tested up to: 6.2.2
  * WC requires at least: 3.3
- * WC tested up to: 8.0.1
+ * WC tested up to: 7.7.0
  */
 
 if (!defined('ABSPATH'))
@@ -741,9 +741,9 @@ function woocommerce_maib_init()
 
             if (!$order->has_status('pending'))
             {
-                $message = sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-maib') , $order_id, $this->method_title); // to do statusMessage
-                $this->log($message, 'notice');
-                wc_add_notice($message, 'error');
+                $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'wc-maib') , $order_id, self::MOD_TITLE, $response->statusMessage);
+                $this->log($message, 'notice');                
+				wc_add_notice($message, 'error');
                 wp_safe_redirect($order->get_checkout_payment_url());
                 exit();
             }
