@@ -660,7 +660,9 @@ function woocommerce_maib_init()
                 $this->log('Callback URL - Order ID not found in woocommerce Orders.', 'error');
                 exit();
             }
-
+			
+			if ($order->has_status('pending'))
+            {
             if ($status === 'OK')
             {
                 switch ($this->transaction_type)
@@ -683,6 +685,7 @@ function woocommerce_maib_init()
             {
                 $this->payment_failed($order, $pay_id);
             }
+			}
 
             $order_note = sprintf('maib transaction details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
             $order->add_order_note($order_note);
@@ -738,17 +741,12 @@ function woocommerce_maib_init()
                 wp_safe_redirect(wc_get_cart_url());
                 exit();
             }
-
-            if (!$order->has_status('pending'))
-            {
-                $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'wc-maib') , $order_id, self::MOD_TITLE, $response->statusMessage);
-                $this->log($message, 'notice');                
-				wc_add_notice($message, 'error');
-                wp_safe_redirect($order->get_checkout_payment_url());
-                exit();
-            }
-
-            $this->send_payment_info_request($pay_id, $this->get_access_token() , $order_id);
+			
+            $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'wc-maib') , $order_id, self::MOD_TITLE, $response->statusMessage);
+            $this->log($message, 'notice');                
+			wc_add_notice($message, 'error');
+            wp_safe_redirect($order->get_checkout_payment_url());
+            exit();
         }
 
         /**
@@ -776,29 +774,8 @@ function woocommerce_maib_init()
                 exit();
             }
 
-            if (!$order->has_status('pending'))
-            {
-
-                switch ($this->transaction_type)
-                {
-                    case self::TRANSACTION_TYPE_CHARGE:
-                        $this->payment_complete($order, $pay_id);
-                    break;
-
-                    case self::TRANSACTION_TYPE_AUTHORIZATION:
-                        $this->payment_hold($order, $pay_id);
-                    break;
-
-                    default:
-                        $this->log(sprintf('Unknown transaction type: %1$s Order ID: %2$s', $this->transaction_type, $order_id) , 'error');
-                    break;
-
-                }
-
-                wp_safe_redirect($this->get_safe_return_url($order));
-                exit();
-            }
-            $this->send_payment_info_request($pay_id, $this->get_access_token() , $order_id);
+			wp_safe_redirect($this->get_safe_return_url($order));
+			exit();
         }
 
         /**
