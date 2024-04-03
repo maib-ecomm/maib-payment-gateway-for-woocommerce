@@ -4,11 +4,13 @@
 Acest plugin vă permite să integrați magazinul dvs. online cu noul API e-commerce de la **maib** pentru a accepta plăți online (Visa / Mastercard / Google Pay / Apple Pay).
 
 ## Descriere
-Pentru a avea posibilitatea de a folosi acest plugin trebuie să fiți înregistrat pe platforma [maibmerchants.md](https://maibmerchants.md).
+Cu etapele de integrare și cerințele către website puteți face cunoștință [aici](https://docs.maibmerchants.md/ro/etape-si-cerinte-pentru-integrare).
 
-Imediat după înregistrare, veți putea efectua plăți în mediul de test cu datele de acces din Proiectul de test.
+Pentru a testa integrarea veți avea nevoie de datele de acces a unui Proiect de Test (Project ID / Proejct Secret / Signature Key). Pentru aceasta vă rugăm să veniți cu o solicitare la adresa de email: ecom@maib.md.
 
-Pentru a efectua plăți reale trebuie să efectuați cel puțin o tranzacție reușită în mediul de test și să parcurgeți pașii necesari pentru activarea Proiectului de producție.
+Pentru a efectua plăți reale, trebuie să aveți contractul e-commerce semnat și să efectuați cel puțin o tranzacție reușită folosind datele Proiectului de Test și datele cardului pentru teste. 
+
+După semnarea contractului veți primi acces la platforma maibmerchants și veți avea posibilitatea să activați Proiectul de Producție.
 
 ### Pași pentru activarea Proiectului de Producție
 1. Profil completat pe platforma maibmerchants
