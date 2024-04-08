@@ -1,13 +1,4 @@
 <?php
-/**
- * PHP SDK for maib Ecommerce API
- *
- * @package maib-ecomm/maib-sdk-php
- * @category SDK
- * @author maib
- * @developer Lupu Constantin
- * @license MIT
- */
 namespace MaibEcomm\MaibSdk;
 
 use RuntimeException;
