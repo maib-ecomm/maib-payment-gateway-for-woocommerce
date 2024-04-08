@@ -1,0 +1,320 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Maib Payment Gateway for WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-15 14:01+0000\n"
+"PO-Revision-Date: 2024-04-08 22:00+0000\n"
+"Last-Translator: adminsmartmozg0490\n"
+"Language-Team: Romanian\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 :(((n%100>19)||(( n%100==0)&&(n!"
+"=0)))? 2 : 1));\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.7; wp-6.5\n"
+"X-Domain: wc-maib"
+
+#. Description of the plugin
+msgid ""
+"Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the "
+"Maib Payment Gateway for WooCommerce."
+msgstr ""
+"Acceptați Visa / Mastercard / Apple Pay / Google Pay în magazinul dvs. "
+"online cu Maib Payment Gateway for WooCommerce."
+
+#: maib-payment-gateway-for-woocommerce.php:268
+msgid "Add these links to the Project settings in maibmerchants.md"
+msgstr ""
+"Adăugați aceste link-uri la Setările Proiectului în <b>maibmerchants.md</b>"
+
+#: maib-payment-gateway-for-woocommerce.php:283
+msgid "Callback URL"
+msgstr "Callback URL"
+
+#: maib-payment-gateway-for-woocommerce.php:1009
+msgid "Complete Two-Step Payment"
+msgstr "Finisare plată în 2 etape"
+
+#: maib-payment-gateway-for-woocommerce.php:481
+msgid "Complete Two-Step payment failed! Please see Maib Payment Gateway logs."
+msgstr ""
+"Finisarea plății în 2 etape a eșuat. Vedeți log-urile Maib Payment Gateway."
+
+#: maib-payment-gateway-for-woocommerce.php:461
+msgid "Complete Two-Step payment not possible, payment id missing."
+msgstr "Nu este posibilă finisarea plății în 2 etape. Lipsește ID-ul plății."
+
+#: maib-payment-gateway-for-woocommerce.php:209
+msgid ""
+"Connection Settings - <a href=\"https://maibmerchants.md\" target=\"_blank\">"
+"maibmerchants.md</a>"
+msgstr ""
+"Setări conectare - <a href=\"https://maibmerchants.md\" target=\"_blank\">"
+"maibmerchants.md</a>"
+
+#: maib-payment-gateway-for-woocommerce.php:177
+msgid "Debug mode"
+msgstr "Mod depanare"
+
+#: maib-payment-gateway-for-woocommerce.php:581
+msgid "Default status"
+msgstr "Stare implicită"
+
+#: maib-payment-gateway-for-woocommerce.php:169
+msgid "Description"
+msgstr "Descriere"
+
+#: maib-payment-gateway-for-woocommerce.php:194
+msgid "Direct Payment"
+msgstr "Plăți Directe"
+
+#: maib-payment-gateway-for-woocommerce.php:189
+msgid ""
+"Direct payment - if the transaction is successful the amount is withdrawn "
+"from the customer account. \n"
+"                    Two-step payment - if the transaction is successful the "
+"amount is just on hold on the customer account, to withdraw the amount use "
+"the Order action: Complete Two-Step Payment."
+msgstr ""
+"Plata directă - în cazul în care tranzacția este reușită, suma este retrasă "
+"din contul clientului. Plata în 2 etape - în cazul în care tranzacția este "
+"reușită, suma este doar reținută în contul clientului; pentru a retrage suma,"
+" utilizați Acțiune Comandă: Finisare plată în 2 etape."
+
+#: maib-payment-gateway-for-woocommerce.php:179
+msgid "Enable logging"
+msgstr "Activare depanare"
+
+#: maib-payment-gateway-for-woocommerce.php:156
+msgid "Enable Maib Payment Gateway"
+msgstr "Activare Maib Payment Gateway"
+
+#: maib-payment-gateway-for-woocommerce.php:154
+msgid "Enable/Disable"
+msgstr "Activare/Dezactivare"
+
+#: maib-payment-gateway-for-woocommerce.php:278
+msgid "Fail URL"
+msgstr "Fail URL"
+
+#. %1$s - order ID, %2$ - order items summary
+#: maib-payment-gateway-for-woocommerce.php:203
+#, php-format
+msgid ""
+"Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary"
+msgstr ""
+"Format: <code>%1$s</code> - ID Comandă, <code>%2$s</code> - Denumirile "
+"produselor"
+
+#. Author URI of the plugin
+msgid "https://github.com/maib-ecomm"
+msgstr "https://github.com/maib-ecomm"
+
+#. URI of the plugin
+msgid "https://github.com/maib-ecomm/woocommerce-maib"
+msgstr "https://github.com/maib-ecomm/woocommerce-maib"
+
+#: maib-payment-gateway-for-woocommerce.php:223
+#: maib-payment-gateway-for-woocommerce.php:230
+msgid "It is available after Project activation."
+msgstr "Este disponibil după activarea Proiectului."
+
+#: maib-payment-gateway-for-woocommerce.php:216
+msgid "It is available after registration."
+msgstr "Este disponibil după înregistrarea pe platformă."
+
+#. Author of the plugin
+msgid "maib"
+msgstr "maib"
+
+#. Name of the plugin
+msgid "Maib Payment Gateway for WooCommerce"
+msgstr "Maib Payment Gateway for WooCommerce"
+
+#: maib-payment-gateway-for-woocommerce.php:273
+msgid "Ok URL"
+msgstr "Ok URL"
+
+#: maib-payment-gateway-for-woocommerce.php:345
+msgid ""
+"One or more of the required fields (Project ID, Project Secret, Signature "
+"Key) is empty in Maib Payment Gateway settings."
+msgstr ""
+"Unul sau mai multe dintre câmpurile obligatorii (Project ID, Project Secret, "
+"Signature Key) nu au fost completate în setările Maib Payment Gateway."
+
+#. %1$ - order ID, %3$s - plugin name, %3$s - error message from API
+#: maib-payment-gateway-for-woocommerce.php:732
+#: maib-payment-gateway-for-woocommerce.php:821
+#, php-format
+msgid "Order #%1$s payment failed via %2$s. %3$s"
+msgstr "Achitarea comenzii #%1$s prin %2$s a eșuat. %3$s"
+
+#: maib-payment-gateway-for-woocommerce.php:200
+msgid "Order description"
+msgstr "Descriere comandă"
+
+#: maib-payment-gateway-for-woocommerce.php:204
+msgid "Order description that the customer will see on the bank payment page."
+msgstr ""
+"Descrierea comenzii afișate clientului pe pagina unde introducere datele "
+"cardului."
+
+#: maib-payment-gateway-for-woocommerce.php:235
+msgid "Order status"
+msgstr "Starea comenzii"
+
+#: maib-payment-gateway-for-woocommerce.php:262
+msgid "Order status when payment failed. By default: Failed."
+msgstr "Starea comenzii dacă tranzacția a eșuat. Implicit: Eșuată."
+
+#: maib-payment-gateway-for-woocommerce.php:253
+#| msgid "Order status when payment failed on hold. By default: On hold."
+msgid "Order status when payment on hold. By default: On hold."
+msgstr ""
+"Starea comenzii dacă tranzacția este autorizată (plăți în 2 etape). Implicit:"
+" În așteptare."
+
+#: maib-payment-gateway-for-woocommerce.php:165
+msgid "Pay online"
+msgstr "Achită Online"
+
+#. %1$s - payment ID
+#: maib-payment-gateway-for-woocommerce.php:905
+#, php-format
+msgid "Payment (%1$s) failed."
+msgstr "Plata (%1$s) a eșuat."
+
+#. %1$s - payment ID
+#: maib-payment-gateway-for-woocommerce.php:886
+#, php-format
+msgid "Payment (%1$s) on hold."
+msgstr "Plată (%1$s) în așteptare."
+
+#. %1$s - payment ID
+#: maib-payment-gateway-for-woocommerce.php:855
+#, php-format
+msgid "Payment (%1$s) successful."
+msgstr "Plată (%1$s) cu succes."
+
+#: maib-payment-gateway-for-woocommerce.php:442
+msgid "Payment already refunded!"
+msgstr "Plată deja returnată! Nu este posibilă returnarea repetată."
+
+#: maib-payment-gateway-for-woocommerce.php:240
+msgid "Payment completed"
+msgstr "Plată cu succes"
+
+#: maib-payment-gateway-for-woocommerce.php:258
+msgid "Payment failed"
+msgstr "Plată eșuată "
+
+#: maib-payment-gateway-for-woocommerce.php:387
+msgid "Payment initiation failed via maib gateway, please try again later."
+msgstr ""
+"Inițierea plății prin Maib Gateway a eșuat. Vă rugăm să ne contactați sau "
+"încercați mai tîrziu."
+
+#: maib-payment-gateway-for-woocommerce.php:171
+msgid "Payment method description that the customer will see during checkout."
+msgstr "Descrierea metodei de plată afișată cumpărătorului la achitare."
+
+#: maib-payment-gateway-for-woocommerce.php:163
+msgid "Payment method title that the customer will see during checkout."
+msgstr "Denumirea metodei de plată afișată cumpărătorului la achitare."
+
+#: maib-payment-gateway-for-woocommerce.php:214
+msgid "Project ID <span class=\"required\">*</span>"
+msgstr "Project ID <span class=\"required\">*</span>"
+
+#: maib-payment-gateway-for-woocommerce.php:221
+msgid "Project Secret <span class=\"required\">*</span>"
+msgstr "Project Secret <span class=\"required\">*</span>"
+
+#: maib-payment-gateway-for-woocommerce.php:267
+msgid "Project Settings"
+msgstr "Setări Proiect"
+
+#: maib-payment-gateway-for-woocommerce.php:437
+msgid "Refund failed! Please see Maib Payment Gateway logs."
+msgstr "Returnarea a eșuat! Vedeți log-urile Maib Payment Gateway."
+
+#: maib-payment-gateway-for-woocommerce.php:417
+msgid "Refund not possible, payment ID missing in order data."
+msgstr ""
+"Returnarea nu este posibilă, ID-ul de plată maib lipsește în datele comenzii."
+
+#: maib-payment-gateway-for-woocommerce.php:182
+msgid ""
+"Save debug messages to the WooCommerce System Status logs. Note: this may "
+"log personal information. Use this for debugging purposes only and delete "
+"the logs when finished."
+msgstr ""
+"Activarea înregistrării mesajelor cu erori în sistemul de Jurnale "
+"WooCommerce. Activați numai în scopuri de depanare și ștergeți jurnalele "
+"când nu sunt careva erori la achitare."
+
+#: maib-payment-gateway-for-woocommerce.php:992
+msgid "Settings"
+msgstr "Setează"
+
+#: maib-payment-gateway-for-woocommerce.php:228
+msgid "Signature Key <span class=\"required\">*</span>"
+msgstr "Signature Key <span class=\"required\">*</span>"
+
+#: maib-payment-gateway-for-woocommerce.php:719
+#: maib-payment-gateway-for-woocommerce.php:726
+#: maib-payment-gateway-for-woocommerce.php:751
+#: maib-payment-gateway-for-woocommerce.php:759
+#: maib-payment-gateway-for-woocommerce.php:788
+#| msgid "Something went wrong on redirect to webstore! Please contact us."
+msgid "Something went wrong on redirect to website! Please contact us."
+msgstr ""
+"A apărut o eroare la redirecționarea către website. Vă rugăm să ne "
+"contactați pentru asistență."
+
+#: maib-payment-gateway-for-woocommerce.php:244
+msgid ""
+"The completed order status after successful payment. By default: Processing."
+msgstr ""
+"Starea comenzii dacă tranzacția s-a finalizat cu succes. Implicit: În "
+"procesare."
+
+#: maib-payment-gateway-for-woocommerce.php:599
+msgid "This Callback URL works and should not be called directly."
+msgstr ""
+"Acest Callback URL funcționează și nu poate fi accesat direct.\n"
+
+#: maib-payment-gateway-for-woocommerce.php:352
+msgid ""
+"This currency is not supported by Maib Payment Gateway. Please choose a "
+"different currency (MDL / EUR / USD)."
+msgstr ""
+"Această valută nu este acceptată de către Maib Payment Gateway. Vă rugăm să "
+"alegeți altă valută (MDL / EUR / USD)."
+
+#: maib-payment-gateway-for-woocommerce.php:161
+msgid "Title"
+msgstr "Denumire"
+
+#: maib-payment-gateway-for-woocommerce.php:186
+msgid "Transaction type"
+msgstr "Tipul plăților"
+
+#: maib-payment-gateway-for-woocommerce.php:195
+msgid "Two-Step Payment"
+msgstr "Plăți în 2 etape"
+
+#: maib-payment-gateway-for-woocommerce.php:249
+msgid "Two-Step Payment authorized"
+msgstr "Plată în 2 etape autorizată"
+
+#: maib-payment-gateway-for-woocommerce.php:181
+msgid "View logs"
+msgstr "Vezi jurnalele"
+
+#: maib-payment-gateway-for-woocommerce.php:173
+msgid "Visa / Mastercard / Apple Pay / Google Pay"
+msgstr "Visa / Mastercard / Apple Pay / Google Pay"
