@@ -433,7 +433,7 @@ class MaibApi
         {
             throw new PaymentException("Invalid 'payId' parameter. Should be a string of 36 characters.");
         }
-        if (isset($data['confirmAmount']) && (!is_numeric($data['confirmAmount']) || $data['confirmAmount'] < 0 || is_string($data['confirmAmount'])))
+        if (isset($data['confirmAmount']) && (!is_numeric($data['confirmAmount']) || $data['confirmAmount'] < 0.01 || is_string($data['confirmAmount'])))
         {
             throw new PaymentException("Invalid 'confirmAmount' parameter. Should be a numeric value > 0.");
         }
@@ -441,7 +441,7 @@ class MaibApi
         {
             throw new PaymentException("Invalid 'amount' parameter. Should be a numeric value >= 1.");
         }
-        if (isset($data['refundAmount']) && (!is_numeric($data['refundAmount']) || $data['refundAmount'] < 0 || is_string($data['refundAmount'])))
+        if (isset($data['refundAmount']) && (!is_numeric($data['refundAmount']) || $data['refundAmount'] < 0.01 || is_string($data['refundAmount'])))
         {
             throw new PaymentException("Invalid 'refundAmount' parameter. Should be a numeric value > 0.");
         }
