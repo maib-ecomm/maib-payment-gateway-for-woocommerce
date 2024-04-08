@@ -214,6 +214,7 @@ function woocommerce_maib_init()
                 'order_template' => array(
                     'title' => __('Order description', 'wc-maib') ,
                     'type' => 'text',
+		            // translators: %1$s - order ID, %2$ - order items summary
                     'description' => __('Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary', 'wc-maib') ,
                     'desc_tip' => __('Order description that the customer will see on the bank payment page.', 'wc-maib') ,
                     'default' => self::ORDER_TEMPLATE
@@ -741,7 +742,8 @@ function woocommerce_maib_init()
                 wp_safe_redirect(wc_get_cart_url());
                 exit();
             }
-			
+
+            // translators: %1$ - order ID, %3$s - plugin name, %3$s - error message from API
             $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'wc-maib') , $order_id, self::MOD_TITLE, $response->statusMessage);
             $this->log($message, 'notice');                
 			wc_add_notice($message, 'error');
@@ -830,6 +832,7 @@ function woocommerce_maib_init()
             else
             {
                 $this->payment_failed($order, $pay_id);
+				// translators: %1$ - order ID, %3$s - plugin name, %3$s - error message from API
                 $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'wc-maib') , $order_id, self::MOD_TITLE, $response->statusMessage);
                 wc_add_notice($message, 'error');
                 $this->log($message, 'notice');
@@ -863,6 +866,7 @@ function woocommerce_maib_init()
         {
             if ($order->payment_complete())
             {
+				// translators: %1$s - payment ID
                 $order_note = sprintf(__('Payment (%1$s) successful.', 'wc-maib') , $pay_id);
                 if ($this->completed_order_status != 'default')
                 {
@@ -894,6 +898,7 @@ function woocommerce_maib_init()
         {
             if ($order->payment_complete())
             {
+				// translators: %1$s - payment ID
                 $order_note = sprintf(__('Payment (%1$s) on hold.', 'wc-maib') , $pay_id);
                 $newOrderStatus = $this->hold_order_status != 'default' ? $this->hold_order_status : 'on-hold';
                 $order->update_status($newOrderStatus, $order_note);
@@ -912,6 +917,7 @@ function woocommerce_maib_init()
          */
         public function payment_failed($order, $pay_id)
         {
+			// translators: %1$s - payment ID
             $order_note = sprintf(__('Payment (%1$s) failed.', 'wc-maib') , $pay_id);
             $newOrderStatus = $this->failed_order_status != 'default' ? $this->failed_order_status : 'failed';
             if ($order->has_status('failed'))
@@ -994,12 +1000,11 @@ function woocommerce_maib_init()
             }
         }
 
-        protected function get_order_description($order)
-        {
-            $description = sprintf(__($this->order_template, 'wc-maib') , $order->get_id() , self::get_order_items_summary($order));
-
-            return apply_filters(self::MOD_ID . '_order_description', $description, $order);
-        }
+		protected function get_order_description($order)
+		{
+			$description = sprintf($this->order_template, $order->get_id(), self::get_order_items_summary($order));
+			return apply_filters(self::MOD_ID . '_order_description', $description, $order);
+		}
 
         protected static function get_order_items_summary($order)
         {
@@ -1061,9 +1066,6 @@ function woocommerce_maib_init()
             return class_exists('WooCommerce');
         }
         #endregion
-        
-
-        
     }
 
     if (!WC_Maib::is_wc_active()) return;
