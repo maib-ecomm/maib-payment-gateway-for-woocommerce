@@ -6,16 +6,16 @@
  * Version: 1.0.0
  * Author: maib
  * Author URI: https://github.com/maib-ecomm
- * Developer: Lupu Constantin
- * Developer URI: https://github.com/kostealupu
+ * Developer: maib
+ * Developer URI: https://github.com/maib-ecomm
  * Text Domain: wc-maib
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.2.2
+ * Tested up to: 6.5
  * WC requires at least: 3.3
- * WC tested up to: 7.7.0
+ * WC tested up to: 7.8.0
  */
 
 if (!defined('ABSPATH'))
