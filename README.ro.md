@@ -12,11 +12,6 @@ Pentru a efectua plăți reale, trebuie să aveți contractul e-commerce semnat 
 
 După semnarea contractului veți primi acces la platforma maibmerchants și veți avea posibilitatea să activați Proiectul de Producție.
 
-### Pași pentru activarea Proiectului de Producție
-1. Profil completat pe platforma maibmerchants
-2. Profil validat
-3. Contract e-commerce
-
 ## Funcțional
 **Plăți online**: Visa / Mastercard / Apple Pay / Google Pay.
 
