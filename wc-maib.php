@@ -8,7 +8,7 @@
  * Author URI: https://github.com/maib-ecomm
  * Developer: maib
  * Developer URI: https://github.com/maib-ecomm
- * Text Domain: wc-maib
+ * Text Domain: maib-payment-gateway-for-woocommerce
  * Domain Path: /languages
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
