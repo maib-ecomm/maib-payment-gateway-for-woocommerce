@@ -1075,10 +1075,15 @@ function woocommerce_maib_init()
     ));
 
     add_action('wp_enqueue_scripts', 'enqueue_payment_gateway_styles');
+	
     function enqueue_payment_gateway_styles()
     {
-        // Enqueue the custom CSS file
-        wp_enqueue_style('payment-gateway-styles', MAIB_GATEWAY_PLUGIN_URL . 'assets/css/style.css');
+	    // Get the version of your plugin from the plugin header
+	    $plugin_data = get_file_data( __FILE__, array( 'Version' => 'Version' ) );
+	    $plugin_version = $plugin_data['Version'];
+	
+	    // Enqueue the custom CSS file with the plugin version
+	    wp_enqueue_style('payment-gateway-styles', MAIB_GATEWAY_PLUGIN_URL . 'assets/css/style.css', array(), $plugin_version);
     }
 
     #region Admin init
