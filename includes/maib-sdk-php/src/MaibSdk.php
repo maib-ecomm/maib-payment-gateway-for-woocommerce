@@ -1,13 +1,5 @@
 <?php
-/**
- * PHP SDK for maib Ecommerce API
- *
- * @package maib-ecomm/maib-sdk-php
- * @category SDK
- * @author maib
- * @developer Lupu Constantin
- * @license MIT
- */
+
 namespace MaibEcomm\MaibSdk;
 
 use RuntimeException;
@@ -42,7 +34,7 @@ class MaibSdk
 
     public function __construct()
     {
-        $this->baseUri = MaibSdk::BASE_URL;
+        $this->baseUri = self::BASE_URL;
     }
 
     /**
@@ -125,7 +117,7 @@ class MaibSdk
     }
 
     /**
-     * Send a request using cURL and handle the response.
+     * Send a request using wp_remote_post() and handle the response.
      *
      * @param string $method The HTTP method for the request.
      * @param string $url The complete URL for the request.
@@ -134,62 +126,61 @@ class MaibSdk
      * @return mixed The decoded response from the API.
      * @throws ClientException if an error occurs during the request or if the response has an error status code.
      */
-    private function sendRequest($method, $url, array $data = [], $token = null)
-    {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	private function sendRequest($method, $url, array $data = [], $token = null)
+	{
+		$args = array(
+			'timeout'     => 30,
+			'headers'     => array(),
+		);
 
-        if ($method === self::HTTP_POST) {
-            $payload = json_encode($data);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            $headers = ["Content-Type: application/json"];
-        } else {
-            $headers = [];
-        }
+		if ($method === self::HTTP_GET) {
+			$args['method'] = 'GET';
+		} elseif ($method === self::HTTP_DELETE) {
+			$args['method'] = 'DELETE';
+		} elseif ($method === self::HTTP_POST) {
+			$args['method'] = 'POST';
+			$args['headers']['Content-Type'] = 'application/json';
+			$args['body'] = wp_json_encode($data);
+		}
 
-        if ($token !== null) {
-            $headers[] = "Authorization: Bearer " . $token;
-        }
+		if ($token !== null) {
+			$args['headers']['Authorization'] = 'Bearer ' . $token;
+		}
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$response = wp_remote_request($url, $args);
 
-        $response = curl_exec($ch);
+		if (is_wp_error($response)) {
+			throw new ClientException("An error occurred: " . $response->get_error_message());
+		}
 
-        if (curl_errno($ch)) {
-            $errorMessage = "An error occurred: " . curl_error($ch);
-            curl_close($ch);
-            throw new ClientException($errorMessage);
-        }
+		$statusCode = wp_remote_retrieve_response_code($response);
 
-        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+		if ($statusCode >= 400) {
+			$response_body = wp_remote_retrieve_body($response);
+			$errorMessage = $this->getErrorMessage($response_body, $statusCode);
+			throw new ClientException(
+				"An error occurred: HTTP " . $statusCode . ": " . $errorMessage
+			);
+		}
 
-        if ($statusCode >= 400) {
-            $errorMessage = $this->getErrorMessage($response, $statusCode);
-            throw new ClientException(
-                "An error occurred: HTTP " . $statusCode . ": " . $errorMessage
-            );
-        }
+		$decodedResponse = wp_remote_retrieve_body($response);
+		$decodedResponse = json_decode($decodedResponse, false);
 
-        $decodedResponse = json_decode($response, false);
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			throw new ClientException(
+				"Failed to decode response: " . json_last_error_msg()
+			);
+		}
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ClientException(
-                "Failed to decode response: " . json_last_error_msg()
-            );
-        }
+		// Debugging statement to log the request and response
+		error_log(
+			"Request: $method $url " .
+				wp_json_encode($data) .
+				" Response: " . wp_json_encode($decodedResponse)
+		);
 
-        // Debugging statement to log the request and response
-        error_log(
-            "Request: $method $url " .
-                json_encode($data) .
-                " Response: $response"
-        );
-
-        return $decodedResponse;
-    }
+		return $decodedResponse;
+	}
 
     /**
      * Retrieves the error message from the API response.
