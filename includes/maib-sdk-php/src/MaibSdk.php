@@ -1,5 +1,4 @@
 <?php
-
 namespace MaibEcomm\MaibSdk;
 
 use RuntimeException;
