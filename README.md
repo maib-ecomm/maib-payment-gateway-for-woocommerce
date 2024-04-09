@@ -36,10 +36,11 @@ After signing the contract, you will receive access to the maibmerchants platfor
 4. Click _Activate Now_ to activate the plugin.
 
 ### Manual
-1. Download the plugin from the WordPress repository.
-2. Unzip the file.
-3. Upload the plugin folder (eg via FTP) to the _/wp-content/plugins/_ directory.
-4. Go to the **Plugins** menu and activate the plugin.
+1. Download the plugin from the WordPress or GitHub repository.
+2. Unzip the downloaded file.
+3. If the plugin was downloaded from GitHub, rename the extracted folder to *maib-payment-gateway-for-woocommerce*.
+4. Upload the *maib-payment-gateway-for-woocommerce* folder to the */wp-content/plugins/* directory.
+5. Go to the **Plugins** menu in your WordPress dashboard and activate the plugin.
 
 ## Settings
 1. **Enable/Disable** Maib Payment Gateway method
