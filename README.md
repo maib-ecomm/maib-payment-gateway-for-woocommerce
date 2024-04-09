@@ -29,14 +29,9 @@ After signing the contract, you will receive access to the maibmerchants platfor
 - PHP ≥ v. 7.2 (with _curl_ and _json_ extensions enabled)
 
 ## Installation
-### From the WP admin dashboard
-1. Go to **Plugins > Add new**.
-2. Search for the _Maib Payment Gateway for WooCommerce_ plugin.
-3. Click _Install Now_ and wait until the plugin is installed successfully.
-4. Click _Activate Now_ to activate the plugin.
 
 ### Manual
-1. Download the plugin from the WordPress or GitHub repository.
+1. Download the plugin from the GitHub repository.
 2. Unzip the downloaded file.
 3. If the plugin was downloaded from GitHub, rename the extracted folder to *maib-payment-gateway-for-woocommerce*.
 4. Upload the *maib-payment-gateway-for-woocommerce* folder to the */wp-content/plugins/* directory.
