@@ -1,9 +1,9 @@
 === Maib Payment Gateway for WooCommerce ===
 Contributors: maib
-Tags: WooCommerce, Moldova, maib, bank, payment, gateway, visa, mastercard, credit card, apple-pay, google-pay
+Tags: woocommerce, moldova, maib, payment, gateway
 Requires at least: 4.8
 Tested up to: 6.5
-Stable tag: trunk
+Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
