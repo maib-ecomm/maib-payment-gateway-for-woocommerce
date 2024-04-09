@@ -8,11 +8,11 @@ Requires PHP: 7.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Maib Payment Gateway Plugin for WooCommerce
+Maib Payment Gateway for WooCommerce
 
 == Description ==
 
-Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway Plugin for WooCommerce.
+Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway for WooCommerce.
 
 You can familiarize yourself with the integration steps and website requirements [here](https://docs.maibmerchants.md/en/integration-steps-and-requirements).
 
