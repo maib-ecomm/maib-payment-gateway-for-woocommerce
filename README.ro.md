@@ -32,17 +32,13 @@ După semnarea contractului veți primi acces la platforma maibmerchants și ve�
 - PHP ≥ v. 5.6 (cu extensiile curl și json activate)
 
 ## Instalare
-### Din panoul de admnistrare WP
-1. Accesați din meniu **Module > Adaugă modul**
-2. Căutați în bara de căutare: Maib Payment Gateway for WooCommerce
-3. Faceți clic pe _Instalează acum_ și așteptați până când plugin-ul va fi instalat cu succes
-4. Faceți clic pe _Activează_ pentru a activa pluginul
 
 ### Prin FTP
-1. Descărcați plugin-ul din repozitoriu WordPress.
-2. Dezarhivați.
-3. Încărcați folderul în directorul _/wp-content/plugins/_.
-4. Accesați în meniu _Module_ și activați plugin-ul.
+1. Descărcați plugin-ul din repozitoriul GitHub.
+2. Dezarhivați fișierul descărcat.
+3. Dacă plugin-ul a fost descărcat din GitHub, redenumiți folderul extras în _maib-payment-gateway-for-woocommerce_.
+4. Încărcați folderul _maib-payment-gateway-for-woocommerce_ în directorul _/wp-content/plugins/_.
+5. Accesați meniul *Pluginuri* în panoul de administrare și activați plugin-ul.
 
 ## Activare metodă de plată
 1. Accesați **WooCommerce > Setări > Plăți**
