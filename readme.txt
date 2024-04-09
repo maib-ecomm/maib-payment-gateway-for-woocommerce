@@ -30,6 +30,12 @@ After signing the contract, you will receive access to the maibmerchants platfor
 * Admin order action: Complete Two-Step Payment;
 * Free to use;
 
+= Getting Started =
+
+* [Installation Instructions](./installation/)
+* [Frequently Asked Questions](./faq/)
+
+
 == Installation ==
 
 = Installation in dashboard =
@@ -70,7 +76,7 @@ Access *WooCommerce > Settings > Payments > Maib Payment Gateway* to configure t
 
 You can request access data for API testing (Project ID / Project Secret / Signature Key) at the email address: ecom@maib.md, specifying the website or application for which you want to perform the integration.
 
-= What are the test card data =
+= What are the test card data? =
 
 * **Cardholder:** Test Test
 * **Card number:** 5102180060101124
@@ -89,7 +95,16 @@ MDL (Moldovan Leu), EUR (Euro) and USD (United States Dollar).
 
 = Troubleshooting =
 
-If you encounter errors or uncertainties during integration/testing, please contact the support team (ecom@maib.md), providing as much error-related data (HTTP status code, errorCode, errorMessage, date/time of the request) and information regarding the e-commerce solution (Project ID, Merchant name, website/app name, website URL).
+Enable debug mode in the plugin settings and access the log file.
+
+If you require further assistance, please don't hesitate to contact the maib ecommerce support team by sending an email to ecom@maib.md.
+
+In your email, make sure to include the following information:
+
+* Merchant name
+* Project ID
+* Date and time of the transaction with errors
+* Errors from log file
 
 == Screenshots ==
 1. Plugin settings
