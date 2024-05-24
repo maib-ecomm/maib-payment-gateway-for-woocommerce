@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Maib Payment Gateway for WooCommerce
  * Description: Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway for WooCommerce.
@@ -21,7 +22,6 @@
 if (!defined('ABSPATH'))
 {
     exit; // Exit if accessed directly
-    
 }
 
 /**
@@ -41,15 +41,18 @@ require_once MAIB_GATEWAY_PLUGIN_DIR . 'includes/maib-sdk-php/src/MaibSdk.php';
 class_alias("MaibEcomm\MaibSdk\MaibAuthRequest", "MaibAuthRequest");
 class_alias("MaibEcomm\MaibSdk\MaibApiRequest", "MaibApiRequest");
 
-add_action('plugins_loaded', 'woocommerce_maib_init', 0);
+add_action('plugins_loaded', 'maib_payment_gateway_init', 0);
 
-function woocommerce_maib_init()
+/**
+ * Initialize the MAIB payment gateway.
+ */
+function maib_payment_gateway_init()
 {
     if (!class_exists('WC_Payment_Gateway')) return;
 
     load_plugin_textdomain('maib-payment-gateway-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
-    class WC_Maib extends WC_Payment_Gateway
+    class MaibPaymentGateway extends WC_Payment_Gateway
     {
         #region Constants
         const MOD_ID = 'maib';
@@ -77,7 +80,6 @@ function woocommerce_maib_init()
         protected $completed_order_status, $hold_order_status, $failed_order_status;
         protected $transient_token_key = 'maib_access_token';
         protected $transient_refresh_key = 'maib_refresh_token';
-
 
         public function __construct()
         {
@@ -136,7 +138,6 @@ function woocommerce_maib_init()
         */
         public function clear_transients()
         {
-
             delete_transient($this->transient_token_key);
             delete_transient($this->transient_refresh_key);
 
@@ -284,7 +285,6 @@ function woocommerce_maib_init()
                     'type' => 'title'
                 )
             );
-
         }
 
         #region Payment
@@ -323,21 +323,21 @@ function woocommerce_maib_init()
             }
 
             $params = [
-            'amount' => (float) number_format($order->get_total(), 2, '.', ''),
-            'currency' => $order->get_currency(),
-            'clientIp' => self::get_client_ip(),
-            'language' => self::get_language(),
-            'description' => substr($this->get_order_description($order), 0, 124),
-            'orderId' => strval($order->get_id()),
-            'clientName' => $client_name,
-            'email' => $order->get_billing_email(),
-            'phone' => substr($order->get_billing_phone(), 0, 40),
-            'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
-            'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_ok)),
-            'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_return_fail)),
-            'callbackUrl'  => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url') , $this->route_callback)),
-            'items' => $product_items,
-             ];
+                'amount' => (float) number_format($order->get_total(), 2, '.', ''),
+                'currency' => $order->get_currency(),
+                'clientIp' => self::get_client_ip(),
+                'language' => self::get_language(),
+                'description' => substr(sanitize_text_field($this->get_order_description($order)), 0, 124),
+                'orderId' => strval($order->get_id()),
+                'clientName' => sanitize_text_field($client_name),
+                'email' => sanitize_email($order->get_billing_email()),
+                'phone' => substr(sanitize_text_field($order->get_billing_phone()), 0, 40),
+                'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
+                'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_ok)),
+                'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_fail)),
+                'callbackUrl'  => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_callback)),
+                'items' => $product_items,
+            ];
 
             if (empty($this->maib_project_id) || empty($this->maib_project_secret) || empty($this->maib_signature_key))
             {
@@ -411,7 +411,9 @@ function woocommerce_maib_init()
         {
             $order = wc_get_order($order_id);
 
-            if (!$order->get_transaction_id())
+            $pay_id = isset($_GET['payId']) ? sanitize_text_field($_GET['payId']) : '';
+
+            if (!$pay_id)
             {
                 $this->log('Refund not possible, payment ID missing in order data.', 'error');
                 return new \WP_Error('error', __('Refund not possible, payment ID missing in order data.', 'maib-payment-gateway-for-woocommerce'));
@@ -419,7 +421,12 @@ function woocommerce_maib_init()
 
             $this->log(sprintf('Start refund, Order id: %s / Refund amount: %s', $order->get_id() , $amount) , 'info');
 
-            $params = ['payId' => strval($order->get_transaction_id()) , 'refundAmount' => (float)number_format($amount, 2, '.', '') , ];
+            $refund_amount = isset($amount) ? (float) number_format($amount, 2, '.', '') : 0.0;
+            
+            $params = [
+                'payId' => $pay_id,
+                'refundAmount' => $refund_amount,
+            ];
 
             try
             {
@@ -445,6 +452,7 @@ function woocommerce_maib_init()
             $this->log('Success ~ Refund done!', 'info');
             $order_note = sprintf('Refunded! Refund details: %s', wp_json_encode($response, JSON_PRETTY_PRINT));
             $order->add_order_note($order_note);
+
             return true;
         }
 
@@ -455,7 +463,9 @@ function woocommerce_maib_init()
         {
             $order = wc_get_order($order_id);
 
-            if (!$order->get_transaction_id())
+            $pay_id = isset($_GET['payId']) ? sanitize_text_field($_GET['payId']) : '';
+
+            if (!$pay_id)
             {
                 $this->log('Complete Two-Step payment not possible, transaction id missing.', 'error');
                 return new \WP_Error('error', __('Complete Two-Step payment not possible, payment id missing.', 'maib-payment-gateway-for-woocommerce'));
@@ -463,7 +473,9 @@ function woocommerce_maib_init()
 
             $this->log(sprintf('Start complete two-step payment, Order id: %s', $order->get_id()) , 'info');
 
-            $params = ['payId' => strval($order->get_transaction_id()) , ];
+            $params = [
+                'payId' => $pay_id
+            ];
 
             // Initiate Complete Two-Step payment
             try
@@ -497,7 +509,9 @@ function woocommerce_maib_init()
 
             return true;
         }
+
         #endregion
+
         #region Utility
         
         /**
@@ -586,6 +600,7 @@ function woocommerce_maib_init()
                     $statuses[str_replace('wc-', '', $k) ] = $v;
                 }
             }
+
             return $statuses;
         }
 
@@ -594,16 +609,20 @@ function woocommerce_maib_init()
          */
         public function route_callback()
         {
-            if ($_SERVER['REQUEST_METHOD'] === 'GET')
-            {
-                $message = sprintf(__('This Callback URL works and should not be called directly.', 'maib-payment-gateway-for-woocommerce') , $this->method_title);
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $json = file_get_contents('php://input');
+                $data = json_decode($json, true);
+            
+                if (!isset($data['signature']) || !isset($data['result'])) {
+                    $this->log('Callback URL - Signature or Payment data not found in notification.', 'error');
+                    exit();
+                }
+            } else {
+                $message = sprintf(__('This Callback URL works and should not be called directly.', 'maib-payment-gateway-for-woocommerce'), $this->method_title);
                 wc_add_notice($message, 'notice');
                 wp_safe_redirect(wc_get_cart_url());
                 exit();
             }
-
-            $json = file_get_contents('php://input');
-            $data = json_decode($json, true);
             
             if (!isset($data['signature']) || !isset($data['result']))
             {
@@ -649,28 +668,27 @@ function woocommerce_maib_init()
             
             if (in_array($order->get_status(), array('pending', 'failed')))
             {
-            if ($status === 'OK')
-            {
-                switch ($this->transaction_type)
+                if ($status === 'OK')
                 {
-                    case self::TRANSACTION_TYPE_CHARGE:
-                        $this->payment_complete($order, $pay_id);
-                    break;
+                    switch ($this->transaction_type)
+                    {
+                        case self::TRANSACTION_TYPE_CHARGE:
+                            $this->payment_complete($order, $pay_id);
+                        break;
 
-                    case self::TRANSACTION_TYPE_AUTHORIZATION:
-                        $this->payment_hold($order, $pay_id);
-                    break;
+                        case self::TRANSACTION_TYPE_AUTHORIZATION:
+                            $this->payment_hold($order, $pay_id);
+                        break;
 
-                    default:
-                        $this->log(sprintf('Unknown transaction type: %1$s Order ID: %2$s', $this->transaction_type, $order_id) , 'error');
-                    break;
-
+                        default:
+                            $this->log(sprintf('Unknown transaction type: %1$s Order ID: %2$s', $this->transaction_type, $order_id) , 'error');
+                        break;
+                    }
                 }
-            }
-            else
-            {
-                $this->payment_failed($order, $pay_id);
-            }
+                else
+                {
+                    $this->payment_failed($order, $pay_id);
+                }
             }
 
             $order_note = sprintf('maib transaction details: %s', wp_json_encode($data_result, JSON_PRETTY_PRINT));
@@ -709,8 +727,8 @@ function woocommerce_maib_init()
          */
         public function route_return_fail()
         {
-            $order_id = isset($_GET['orderId']) ? (int)$_GET['orderId'] : false;
-            $pay_id = isset($_GET['payId']) ? $_GET['payId'] : false;
+            $order_id = isset( $_GET['orderId'] ) ? absint( $_GET['orderId'] ) : false;
+            $pay_id = isset( $_GET['payId'] ) ? sanitize_text_field( wp_unslash( $_GET['payId'] ) ) : false;
             $order = wc_get_order($order_id);
 
             if (!$order_id || !$pay_id)
@@ -741,8 +759,8 @@ function woocommerce_maib_init()
          */
         public function route_return_ok()
         {
-            $order_id = isset($_GET['orderId']) ? (int)$_GET['orderId'] : false;
-            $pay_id = isset($_GET['payId']) ? $_GET['payId'] : false;
+            $order_id = isset( $_GET['orderId'] ) ? absint( $_GET['orderId'] ) : false;
+            $pay_id = isset( $_GET['payId'] ) ? sanitize_text_field( wp_unslash( $_GET['payId'] ) ) : false;
             $order = wc_get_order($order_id);
 
             if (!$order_id || !$pay_id)
@@ -806,7 +824,6 @@ function woocommerce_maib_init()
                     default:
                         $this->log(sprintf('Unknown transaction type: %1$s Order ID: %2$s', $this->transaction_type, $order_id) , 'error');
                     break;
-
                 }
 
                 wp_safe_redirect($this->get_safe_return_url($order));
@@ -917,33 +934,73 @@ function woocommerce_maib_init()
             }
         }
 
+        /**
+         * Format the price with two decimals.
+         *
+         * @param float $price The price to format.
+         * @return string The formatted price.
+         */
         protected static function price_format($price)
         {
             $decimals = 2;
             return number_format($price, $decimals, '.', '');
         }
 
+        /**
+         * Get the language code from the current locale.
+         *
+         * @return string The language code.
+         */
         protected static function get_language()
         {
             $lang = get_locale();
             return substr($lang, 0, 2);
         }
 
+        /**
+         * Get the client's IP address.
+         *
+         * @return string The client's IP address.
+         */
         protected static function get_client_ip()
         {
-            return WC_Geolocation::get_ip_address();
+            // Check if WC_Geolocation class exists and the method is available
+            if (class_exists('WC_Geolocation') && method_exists('WC_Geolocation', 'get_ip_address')) {
+                return WC_Geolocation::get_ip_address();
+            } else {
+                // Fallback method to retrieve the IP address
+                return self::get_fallback_ip_address();
+            }
         }
 
+        /**
+         * Fallback method to retrieve the client's IP address if WC_Geolocation is not available.
+         *
+         * @return string The client's IP address.
+         */
+        protected static function get_fallback_ip_address()
+        {
+            return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        }
+
+        /**
+         * Get the URL to view logs in WooCommerce.
+         *
+         * @return string The URL to view logs.
+         */
         protected static function get_logs_url()
         {
             return add_query_arg(array(
                 'page' => 'wc-status',
                 'tab' => 'logs',
-                //'log_file' => ''
-                
             ) , admin_url('admin.php'));
         }
 
+        /**
+         * Get the URL to plugin settings in WooCommerce.
+         *
+         * @return string The URL to plugin settings.
+         */
         public static function get_settings_url()
         {
             return add_query_arg(array(
@@ -953,12 +1010,26 @@ function woocommerce_maib_init()
             ) , admin_url('admin.php'));
         }
 
+        /**
+         * Get the transaction type of an order.
+         *
+         * @param int $order_id The ID of the order.
+         * @return string The transaction type.
+         */
         protected static function get_order_transaction_type($order_id)
         {
             $transaction_type = get_post_meta($order_id, self::MOD_TRANSACTION_TYPE, true);
             return $transaction_type;
         }
 
+        /**
+         * Set post meta with fallback to update if already exists.
+         *
+         * @param int    $post_id    The ID of the post.
+         * @param string $meta_key   The meta key.
+         * @param mixed  $meta_value The meta value.
+         * @return void
+         */
         protected static function set_post_meta($post_id, $meta_key, $meta_value)
         {
             if (!add_post_meta($post_id, $meta_key, $meta_value, true))
@@ -967,12 +1038,24 @@ function woocommerce_maib_init()
             }
         }
 
+        /**
+         * Get the description of an order.
+         *
+         * @param object $order The order object.
+         * @return string The order description.
+         */
         protected function get_order_description($order)
         {
             $description = sprintf($this->order_template, $order->get_id(), self::get_order_items_summary($order));
             return apply_filters(self::MOD_ID . '_order_description', $description, $order);
         }
 
+        /**
+         * Get the summary of items in an order.
+         *
+         * @param object $order The order object.
+         * @return string The summary of order items.
+         */
         protected static function get_order_items_summary($order)
         {
             $items = $order->get_items();
@@ -985,7 +1068,15 @@ function woocommerce_maib_init()
             return join(', ', $items_names);
         }
         #endregion
+
         #region Admin
+
+        /**
+         * Add plugin settings link in the plugin list.
+         *
+         * @param array $links The existing plugin links.
+         * @return array The modified plugin links.
+         */
         public static function plugin_links($links)
         {
             $plugin_links = array(
@@ -995,15 +1086,21 @@ function woocommerce_maib_init()
             return array_merge($plugin_links, $links);
         }
 
+        /**
+         * Modify order actions based on the payment method.
+         *
+         * @param array $actions The existing order actions.
+         * @return array The modified order actions.
+         */
         static function order_actions($actions)
         {
-            global $theorder;
-            if ($theorder->get_payment_method() !== self::MOD_ID)
+            global $maib_order;
+            if ($maib_order->get_payment_method() !== self::MOD_ID)
             {
                 return $actions;
             }
 
-            $transaction_type = get_post_meta($theorder->get_id() , self::MOD_TRANSACTION_TYPE, true);
+            $transaction_type = get_post_meta($maib_order->get_id() , self::MOD_TRANSACTION_TYPE, true);
             if ($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION)
             {
                 $actions['maib_complete_transaction'] = sprintf(__('Complete Two-Step Payment', 'maib-payment-gateway-for-woocommerce') , self::MOD_TITLE);
@@ -1012,6 +1109,12 @@ function woocommerce_maib_init()
             return $actions;
         }
 
+        /**
+         * Action to complete a transaction.
+         *
+         * @param object $order The WooCommerce order object.
+         * @return mixed The result of completing the transaction.
+         */
         static function action_complete_transaction($order)
         {
             $order_id = $order->get_id();
@@ -1021,25 +1124,40 @@ function woocommerce_maib_init()
         }
 
         #endregion
+
         #region WooCommerce
+
+        /**
+         * Add the gateway to WooCommerce payment methods.
+         *
+         * @param array $methods The existing payment methods.
+         * @return array The modified payment methods.
+         */
         public static function add_gateway($methods)
         {
             $methods[] = self::class;
             return $methods;
         }
 
+        /**
+         * Check if WooCommerce is active.
+         *
+         * @return bool True if WooCommerce is active, false otherwise.
+         */
         public static function is_wc_active()
         {
             return class_exists('WooCommerce');
         }
+
         #endregion
     }
 
-    if (!WC_Maib::is_wc_active()) return;
+    if (!MaibPaymentGateway::is_wc_active())
+        return;
 
-    //Add gateway to WooCommerce
+    // Add gateway to WooCommerce
     add_filter('woocommerce_payment_gateways', array(
-        WC_Maib::class ,
+        MaibPaymentGateway::class ,
         'add_gateway'
     ));
 
@@ -1059,34 +1177,33 @@ function woocommerce_maib_init()
     if (is_admin())
     {
         add_filter('plugin_action_links_' . plugin_basename(__FILE__) , array(
-            WC_Maib::class ,
+            MaibPaymentGateway::class ,
             'plugin_links'
         ));
 
         //Add WooCommerce order actions
         add_filter('woocommerce_order_actions', array(
-            WC_Maib::class ,
+            MaibPaymentGateway::class ,
             'order_actions'
         ));
+
         add_action('woocommerce_order_action_maib_complete_transaction', array(
-            WC_Maib::class ,
+            MaibPaymentGateway::class ,
             'action_complete_transaction'
         ));
-
     }
     #endregion
-    
 }
 
 #region Register activation hooks
-function woocommerce_maib_activation()
+function maib_payment_gateway_activation()
 {
-    woocommerce_maib_init();
+    maib_payment_gateway_init();
 
-    if (!class_exists('WC_Maib')) die('WooCommerce is required for this plugin to work!');
-
+    if (!class_exists('MaibPaymentGateway')) die('WooCommerce is required for this plugin to work!');
 }
 
-register_activation_hook(__FILE__, 'woocommerce_maib_activation');
+register_activation_hook(__FILE__, 'maib_payment_gateway_activation');
 #endregion
+
 ?>
