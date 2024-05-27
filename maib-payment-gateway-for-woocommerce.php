@@ -50,6 +50,17 @@ function maib_payment_gateway_init()
 {
     if (!class_exists('WC_Payment_Gateway')) return;
 
+    // Hook the custom function to the 'before_woocommerce_init' action
+    add_action('before_woocommerce_init', function() {
+        if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
+        }
+    });
+
+    // Hook the custom function to the 'woocommerce_blocks_loaded' action
+    add_action( 'woocommerce_blocks_loaded', 'maib_register_order_approval_payment_method_type' );
+
     load_plugin_textdomain('maib-payment-gateway-for-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
     class MaibPaymentGateway extends WC_Payment_Gateway
@@ -89,7 +100,8 @@ function maib_payment_gateway_init()
             $this->has_fields = false;
             $this->supports = array(
                 'products',
-                'refunds'
+                'refunds',
+                'custom_order_tables',
             );
 
             #region Initialize user set variables
@@ -130,7 +142,6 @@ function maib_payment_gateway_init()
             add_action('woocommerce_api_' . $this->route_return_ok, [$this, 'route_return_ok']);
             add_action('woocommerce_api_' . $this->route_return_fail, [$this, 'route_return_fail']);
             add_action('woocommerce_api_' . $this->route_callback, [$this, 'route_callback']);
-
         }
 
         /**
@@ -1205,5 +1216,27 @@ function maib_payment_gateway_activation()
 
 register_activation_hook(__FILE__, 'maib_payment_gateway_activation');
 #endregion
+
+/**
+ * Custom function to register a payment method type
+ */
+function maib_register_order_approval_payment_method_type() {
+    // Check if the required class exists
+    if ( ! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+        return;
+    }
+
+    // Include the MAIB Blocks Checkout class
+    require_once plugin_dir_path(__FILE__) . 'class-block.php';
+
+    // Hook the registration function to the 'woocommerce_blocks_payment_method_type_registration' action
+    add_action(
+        'woocommerce_blocks_payment_method_type_registration',
+        function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+            // Register an instance of MaibPaymentGateway_Blocks
+            $payment_method_registry->register( new MaibPaymentGateway_Blocks );
+        }
+    );
+}
 
 ?>
