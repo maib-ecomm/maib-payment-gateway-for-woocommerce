@@ -1106,15 +1106,19 @@ function maib_payment_gateway_init()
         static function order_actions($actions)
         {
             global $maib_order;
-            if ($maib_order->get_payment_method() !== self::MOD_ID)
-            {
+
+            // Check if $maib_order is null or not an instance of WC_Order
+            if (!isset($maib_order) || !($maib_order instanceof WC_Order)) {
                 return $actions;
             }
 
-            $transaction_type = get_post_meta($maib_order->get_id() , self::MOD_TRANSACTION_TYPE, true);
-            if ($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION)
-            {
-                $actions['maib_complete_transaction'] = sprintf(__('Complete Two-Step Payment', 'maib-payment-gateway-for-woocommerce') , self::MOD_TITLE);
+            if ($maib_order->get_payment_method() !== self::MOD_ID) {
+                return $actions;
+            }
+
+            $transaction_type = get_post_meta($maib_order->get_id(), self::MOD_TRANSACTION_TYPE, true);
+            if ($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION) {
+                $actions['maib_complete_transaction'] = sprintf(__('Complete Two-Step Payment', 'maib-payment-gateway-for-woocommerce'), self::MOD_TITLE);
             }
 
             return $actions;
