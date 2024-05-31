@@ -422,7 +422,7 @@ function maib_payment_gateway_init()
         {
             $order = wc_get_order($order_id);
 
-            $pay_id = isset($_GET['payId']) ? sanitize_text_field($_GET['payId']) : '';
+            $pay_id = $order->get_transaction_id();
 
             if (!$pay_id)
             {
