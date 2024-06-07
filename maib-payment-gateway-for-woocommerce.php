@@ -422,21 +422,17 @@ function maib_payment_gateway_init()
         {
             $order = wc_get_order($order_id);
 
-            $pay_id = $order->get_transaction_id();
-
-            if (!$pay_id)
+            if (!$order->get_transaction_id())
             {
                 $this->log('Refund not possible, payment ID missing in order data.', 'error');
                 return new \WP_Error('error', __('Refund not possible, payment ID missing in order data.', 'maib-payment-gateway-for-woocommerce'));
             }
 
             $this->log(sprintf('Start refund, Order id: %s / Refund amount: %s', $order->get_id() , $amount) , 'info');
-
-            $refund_amount = isset($amount) ? (float) number_format($amount, 2, '.', '') : 0.0;
             
             $params = [
-                'payId' => $pay_id,
-                'refundAmount' => $refund_amount,
+                'payId' => strval($order->get_transaction_id()), 
+                'refundAmount' => isset($amount) ? (float) number_format($amount, 2, '.', '') : 0.0, 
             ];
 
             try
@@ -474,9 +470,7 @@ function maib_payment_gateway_init()
         {
             $order = wc_get_order($order_id);
 
-            $pay_id = isset($_GET['payId']) ? sanitize_text_field($_GET['payId']) : '';
-
-            if (!$pay_id)
+            if (!$order->get_transaction_id())
             {
                 $this->log('Complete Two-Step payment not possible, transaction id missing.', 'error');
                 return new \WP_Error('error', __('Complete Two-Step payment not possible, payment id missing.', 'maib-payment-gateway-for-woocommerce'));
@@ -485,7 +479,7 @@ function maib_payment_gateway_init()
             $this->log(sprintf('Start complete two-step payment, Order id: %s', $order->get_id()) , 'info');
 
             $params = [
-                'payId' => $pay_id
+                'payId' => strval($order->get_transaction_id()), 
             ];
 
             // Initiate Complete Two-Step payment
