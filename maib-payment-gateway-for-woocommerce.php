@@ -402,7 +402,10 @@ function maib_payment_gateway_init()
             update_post_meta($order_id, '_transaction_id', $response->payId);
             self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
 
+            $order->update_meta_data('_transaction_id', $response->payId);
             $order->add_order_note('maib Payment ID: <br>' . $response->payId);
+            $order->save();
+
             $redirect_to = $response->payUrl;
 
             $this->log(sprintf('Order id: %d, redirecting user to maib gateway: %s', $order_id, $redirect_to) , 'notice');
