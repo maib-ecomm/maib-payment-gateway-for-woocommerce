@@ -2,7 +2,7 @@
 Contributors: maib
 Tags: woocommerce, moldova, maib, payment, gateway
 Requires at least: 4.8
-Tested up to: 6.5
+Tested up to: 6.5.4
 Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPLv3 or later
@@ -13,6 +13,8 @@ Maib Payment Gateway for WooCommerce
 == Description ==
 
 Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway for WooCommerce.
+
+This plugin is developed by [maib](https://www.maib.md/en) and is based on [maib e-commerce API](https://docs.maibmerchants.md/en).
 
 You can familiarize yourself with the integration steps and website requirements [here](https://docs.maibmerchants.md/en/integration-steps-and-requirements).
 
@@ -28,7 +30,6 @@ After signing the contract, you will receive access to the maibmerchants platfor
 * Three currencies: MDL / USD / EUR (depending on your Project settings);
 * Payment refund: Partial or full refund;
 * Admin order action: Complete Two-Step Payment;
-* Free to use;
 
 = Getting Started =
 

@@ -3,6 +3,8 @@
 Accept Visa / Mastercard / Apple Pay / Google Pay on your store with the Maib Payment Gateway Plugin for WooCommerce
 
 ## Description
+This plugin is developed by [maib](https://www.maib.md/en) and is based on [maib e-commerce API](https://docs.maibmerchants.md/en).
+
 You can familiarize yourself with the integration steps and website requirements [here](https://docs.maibmerchants.md/en/integration-steps-and-requirements).
 
 To test the integration, you will need access to a Test Project (Project ID / Project Secret / Signature Key). For this, please submit a request to the email address: ecom@maib.md.

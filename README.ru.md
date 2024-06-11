@@ -3,6 +3,8 @@
 Этот плагин позволяет интегрировать ваш WooCommerce интернет-магазин с **maib** e-commerce API для приема онлайн-платежей (Visa/Mastercard/Google Pay/Apple Pay).
 
 ## Описание
+Этот плагин разработан [maib](https://www.maib.md/en) на базе [maib e-commerce API](https://docs.maibmerchants.md/en).
+
 Подробнее об этапах интеграции и требованиях к сайту можно узнать [здесь](https://docs.maibmerchants.md/ru/etapy-i-trebovaniya-k-integracii).
 
 Чтобы протестировать интеграцию, вам понадобятся данные доступа к тестовому проекту (Project ID / Project Secret / Signature Key). Для этого просим вас отправить запрос на электронную почту: ecom@maib.md.
