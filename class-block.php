@@ -77,6 +77,7 @@ final class MaibPaymentGateway_Blocks extends AbstractPaymentMethodType {
         return [
             'title' => $this->gateway->title,
             'description' => $this->gateway->description,
+            'icon' => $this->gateway->icon,
         ];
     }
 }
