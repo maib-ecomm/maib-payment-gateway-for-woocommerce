@@ -2,7 +2,7 @@
 Contributors: maib
 Tags: woocommerce, moldova, maib, payment, gateway
 Requires at least: 4.8
-Tested up to: 6.5.4
+Tested up to: 6.6
 Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPLv3 or later

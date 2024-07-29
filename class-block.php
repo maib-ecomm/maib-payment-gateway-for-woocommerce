@@ -52,7 +52,7 @@ final class MaibPaymentGateway_Blocks extends AbstractPaymentMethodType {
                 'wp-html-entities', // WordPress HTML entities.
                 'wp-i18n', // WordPress internationalization.
             ],
-            null,
+            '1.0.0',
             true // Load script in the footer.
         );
 

@@ -66,21 +66,18 @@ function maib_payment_gateway_init()
     class MaibPaymentGateway extends WC_Payment_Gateway
     {
         #region Constants
-        const MOD_ID = 'maib';
-        const MOD_TITLE = 'Maib Payment Gateway';
-        const MOD_DESC = 'Visa / Mastercard / Apple Pay / Google Pay';
-        const MOD_PREFIX = 'maib_';
+        const MAIB_MOD_ID = 'maib';
+        const MAIB_MOD_TITLE = 'Maib Payment Gateway';
+        const MAIB_MOD_DESC = 'Visa / Mastercard / Apple Pay / Google Pay';
+        const MAIB_MOD_PREFIX = 'maib_';
 
-        const TRANSACTION_TYPE_CHARGE = 'direct';
-        const TRANSACTION_TYPE_AUTHORIZATION = 'twostep';
+        const MAIB_TRANSACTION_TYPE_CHARGE = 'direct';
+        const MAIB_TRANSACTION_TYPE_AUTHORIZATION = 'twostep';
 
-        const MOD_TRANSACTION_TYPE = self::MOD_PREFIX . 'transaction_type';
-        const MOD_HOLD_STATUS = self::MOD_PREFIX . 'hold_order_status';
-        const MOD_TRANSACTION_ID = self::MOD_PREFIX . 'transaction_id';
-        const MOD_PAYMENT_ID = self::MOD_PREFIX . 'payment_id';
+        const MAIB_MOD_TRANSACTION_TYPE = self::MAIB_MOD_PREFIX . 'transaction_type';
 
-        const SUPPORTED_CURRENCIES = ['MDL', 'EUR', 'USD'];
-        const ORDER_TEMPLATE = 'Order #%1$s';
+        const MAIB_SUPPORTED_CURRENCIES = ['MDL', 'EUR', 'USD'];
+        const MAIB_ORDER_TEMPLATE = 'Order #%1$s';
         #endregion
         
         public static $log_enabled = false;
@@ -89,14 +86,14 @@ function maib_payment_gateway_init()
         protected $logo_type, $debug, $transaction_type, $order_template;
         protected $maib_project_id, $maib_project_secret, $maib_signature_key;
         protected $completed_order_status, $hold_order_status, $failed_order_status;
-        protected $transient_token_key = 'maib_access_token';
-        protected $transient_refresh_key = 'maib_refresh_token';
+        protected $maib_access_token = 'maib_access_token';
+        protected $maib_refresh_token = 'maib_refresh_token';
 
         public function __construct()
         {
-            $this->id = self::MOD_ID;
-            $this->method_title = self::MOD_TITLE;
-            $this->method_description = self::MOD_DESC;
+            $this->id = self::MAIB_MOD_ID;
+            $this->method_title = self::MAIB_MOD_TITLE;
+            $this->method_description = self::MAIB_MOD_DESC;
             $this->has_fields = false;
             $this->supports = array(
                 'products',
@@ -114,8 +111,8 @@ function maib_payment_gateway_init()
             $this->debug = 'yes' === $this->get_option('debug', 'no');
             self::$log_enabled = $this->debug;
 
-            $this->transaction_type = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
-            $this->order_template = $this->get_option('order_template', self::ORDER_TEMPLATE);
+            $this->transaction_type = $this->get_option('transaction_type', self::MAIB_TRANSACTION_TYPE_CHARGE);
+            $this->order_template = $this->get_option('order_template', self::MAIB_ORDER_TEMPLATE);
 
             $this->maib_project_id = $this->get_option('maib_project_id');
             $this->maib_project_secret = $this->get_option('maib_project_secret');
@@ -149,8 +146,8 @@ function maib_payment_gateway_init()
         */
         public function clear_transients()
         {
-            delete_transient($this->transient_token_key);
-            delete_transient($this->transient_refresh_key);
+            delete_transient($this->maib_access_token);
+            delete_transient($this->maib_refresh_token);
 
             // Save the new settings
             $this->process_admin_options();
@@ -201,10 +198,10 @@ function maib_payment_gateway_init()
                     'description' => __('Direct payment - if the transaction is successful the amount is withdrawn from the customer account. 
                     Two-step payment - if the transaction is successful the amount is just on hold on the customer account, to withdraw the amount use the Order action: Complete Two-Step Payment.', 'maib-payment-gateway-for-woocommerce') ,
                     'desc_tip' => true,
-                    'default' => self::TRANSACTION_TYPE_CHARGE,
+                    'default' => self::MAIB_TRANSACTION_TYPE_CHARGE,
                     'options' => array(
-                        self::TRANSACTION_TYPE_CHARGE => __('Direct Payment', 'maib-payment-gateway-for-woocommerce') ,
-                        self::TRANSACTION_TYPE_AUTHORIZATION => __('Two-Step Payment', 'maib-payment-gateway-for-woocommerce')
+                        self::MAIB_TRANSACTION_TYPE_CHARGE => __('Direct Payment', 'maib-payment-gateway-for-woocommerce') ,
+                        self::MAIB_TRANSACTION_TYPE_AUTHORIZATION => __('Two-Step Payment', 'maib-payment-gateway-for-woocommerce')
                     )
                 ) ,
 
@@ -214,7 +211,7 @@ function maib_payment_gateway_init()
                     // translators: %1$s - order ID, %2$ - order items summary
                     'description' => __('Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary', 'maib-payment-gateway-for-woocommerce') ,
                     'desc_tip' => __('Order description that the customer will see on the bank payment page.', 'maib-payment-gateway-for-woocommerce') ,
-                    'default' => self::ORDER_TEMPLATE
+                    'default' => self::MAIB_ORDER_TEMPLATE
                 ) ,
 
                 'connection_settings' => array(
@@ -333,6 +330,8 @@ function maib_payment_gateway_init()
                 );
             }
 
+            $nonce = wp_create_nonce('verify_order');
+
             $params = [
                 'amount' => (float) number_format($order->get_total(), 2, '.', ''),
                 'currency' => $order->get_currency(),
@@ -344,9 +343,9 @@ function maib_payment_gateway_init()
                 'email' => sanitize_email($order->get_billing_email()),
                 'phone' => substr(sanitize_text_field($order->get_billing_phone()), 0, 40),
                 'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
-                'okUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_ok)),
-                'failUrl' => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_fail)),
-                'callbackUrl'  => esc_url(sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_callback)),
+                'okUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_ok))),
+                'failUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_fail))),
+                'callbackUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_callback))),
                 'items' => $product_items,
             ];
 
@@ -357,7 +356,7 @@ function maib_payment_gateway_init()
                 return;
             }
 
-            if (!in_array($params['currency'], self::SUPPORTED_CURRENCIES))
+            if (!in_array($params['currency'], self::MAIB_SUPPORTED_CURRENCIES))
             {
                 $this->log(sprintf('Unsupported currency %s for order %d', $params['currency'], $order_id) , 'error');
                 wc_add_notice(__('This currency is not supported by Maib Payment Gateway. Please choose a different currency (MDL / EUR / USD).', 'maib-payment-gateway-for-woocommerce') , 'error');
@@ -370,13 +369,13 @@ function maib_payment_gateway_init()
             {
                 switch ($this->transaction_type)
                 {
-                    case self::TRANSACTION_TYPE_CHARGE:
+                    case self::MAIB_TRANSACTION_TYPE_CHARGE:
                         $this->log('Initiate Direct Payment', 'info');
                         $response = MaibApiRequest::create()->pay($params, $this->get_access_token());
                         $this->log(sprintf('Response from pay endpoint: %s, order_id: %d', wp_json_encode($response, JSON_PRETTY_PRINT) , $order_id) , 'info');
                     break;
 
-                    case self::TRANSACTION_TYPE_AUTHORIZATION:
+                    case self::MAIB_TRANSACTION_TYPE_AUTHORIZATION:
                         $this->log('Initiate Two-Step Payment', 'info');
                         $response = MaibApiRequest::create()->hold($params, $this->get_access_token());
                         $this->log(sprintf('Response from hold endpoint: %s, order_id: %d', wp_json_encode($response, JSON_PRETTY_PRINT) , $order_id) , 'info');
@@ -400,7 +399,7 @@ function maib_payment_gateway_init()
             }
 
             update_post_meta($order_id, '_transaction_id', $response->payId);
-            self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
+            self::set_post_meta($order_id, self::MAIB_MOD_TRANSACTION_TYPE, $this->transaction_type);
 
             $order->update_meta_data('_transaction_id', $response->payId);
             $order->add_order_note('maib Payment ID: <br>' . $response->payId);
@@ -547,8 +546,8 @@ function maib_payment_gateway_init()
          */
         public function get_access_token()
         {
-            $access_token = get_transient($this->transient_token_key);
-            $refresh_token = get_transient($this->transient_refresh_key);
+            $access_token = get_transient($this->maib_access_token);
+            $refresh_token = get_transient($this->maib_refresh_token);
 
             if (false === $access_token) {
                 if (false === $refresh_token) {
@@ -560,8 +559,8 @@ function maib_payment_gateway_init()
                 }
 
                 if ($response && isset($response->accessToken, $response->expiresIn)) {
-                    set_transient($this->transient_token_key, $response->accessToken, $response->expiresIn);
-                    set_transient($this->transient_refresh_key, $response->refreshToken, $response->refreshExpiresIn);
+                    set_transient($this->maib_access_token, $response->accessToken, $response->expiresIn);
+                    set_transient($this->maib_refresh_token, $response->refreshToken, $response->refreshExpiresIn);
                     $access_token = $response->accessToken;
                 } else {
                     $this->log('API did not return an access token.', 'critical');
@@ -680,11 +679,11 @@ function maib_payment_gateway_init()
                 {
                     switch ($this->transaction_type)
                     {
-                        case self::TRANSACTION_TYPE_CHARGE:
+                        case self::MAIB_TRANSACTION_TYPE_CHARGE:
                             $this->payment_complete($order, $pay_id);
                         break;
 
-                        case self::TRANSACTION_TYPE_AUTHORIZATION:
+                        case self::MAIB_TRANSACTION_TYPE_AUTHORIZATION:
                             $this->payment_hold($order, $pay_id);
                         break;
 
@@ -735,8 +734,13 @@ function maib_payment_gateway_init()
          */
         public function route_return_fail()
         {
-            $order_id = isset( $_GET['orderId'] ) ? absint( $_GET['orderId'] ) : false;
-            $pay_id = isset( $_GET['payId'] ) ? sanitize_text_field( wp_unslash( $_GET['payId'] ) ) : false;
+            list($order_id, $pay_id) = (isset($_GET['nonce']) && wp_verify_nonce($_GET['nonce'], 'verify_order')) 
+                ? [
+                    isset($_GET['orderId']) ? absint($_GET['orderId']) : false,
+                    isset($_GET['payId']) ? sanitize_text_field(wp_unslash($_GET['payId'])) : false
+                ] 
+                : wp_die(esc_html__('Security check failed.', 'textdomain'));
+
             $order = wc_get_order($order_id);
 
             if (!$order_id || !$pay_id)
@@ -755,8 +759,8 @@ function maib_payment_gateway_init()
             }
 
             // translators: %1$ - order ID, %3$s - plugin name, %3$s - error message from API
-            $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'maib-payment-gateway-for-woocommerce') , $order_id, self::MOD_TITLE, $response->statusMessage);
-            $this->log($message, 'notice');                
+            $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'maib-payment-gateway-for-woocommerce') , $order_id, self::MAIB_MOD_TITLE, $response->statusMessage);
+            $this->log($message, 'notice');
             wc_add_notice($message, 'error');
             wp_safe_redirect($order->get_checkout_payment_url());
             exit();
@@ -767,8 +771,13 @@ function maib_payment_gateway_init()
          */
         public function route_return_ok()
         {
-            $order_id = isset( $_GET['orderId'] ) ? absint( $_GET['orderId'] ) : false;
-            $pay_id = isset( $_GET['payId'] ) ? sanitize_text_field( wp_unslash( $_GET['payId'] ) ) : false;
+            list($order_id, $pay_id) = (isset($_GET['nonce']) && wp_verify_nonce($_GET['nonce'], 'verify_order')) 
+                ? [
+                    isset($_GET['orderId']) ? absint($_GET['orderId']) : false,
+                    isset($_GET['payId']) ? sanitize_text_field(wp_unslash($_GET['payId'])) : false
+                ] 
+                : wp_die(esc_html__('Security check failed.', 'textdomain'));
+
             $order = wc_get_order($order_id);
 
             if (!$order_id || !$pay_id)
@@ -821,11 +830,11 @@ function maib_payment_gateway_init()
 
                 switch ($this->transaction_type)
                 {
-                    case self::TRANSACTION_TYPE_CHARGE:
+                    case self::MAIB_TRANSACTION_TYPE_CHARGE:
                         $this->payment_complete($order, $pay_id);
                     break;
 
-                    case self::TRANSACTION_TYPE_AUTHORIZATION:
+                    case self::MAIB_TRANSACTION_TYPE_AUTHORIZATION:
                         $this->payment_hold($order, $pay_id);
                     break;
 
@@ -843,7 +852,7 @@ function maib_payment_gateway_init()
             {
                 $this->payment_failed($order, $pay_id);
                 // translators: %1$ - order ID, %3$s - plugin name, %3$s - error message from API
-                $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'maib-payment-gateway-for-woocommerce') , $order_id, self::MOD_TITLE, $response->statusMessage);
+                $message = sprintf(__('Order #%1$s payment failed via %2$s. %3$s', 'maib-payment-gateway-for-woocommerce') , $order_id, self::MAIB_MOD_TITLE, $response->statusMessage);
                 wc_add_notice($message, 'error');
                 $this->log($message, 'notice');
                 wp_safe_redirect($order->get_checkout_payment_url());
@@ -988,7 +997,63 @@ function maib_payment_gateway_init()
          */
         protected static function get_fallback_ip_address()
         {
-            return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+            if (array_key_exists('HTTP_X_REAL_IP', $_SERVER)) {
+                return self::validate_ip( sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REAL_IP'])));
+            }
+    
+            if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
+                return self::validate_ip( sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP'])));
+            }
+
+            if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+                $ips = explode(',', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR'])));
+                if (is_array($ips) && ! empty($ips)) {
+                    return self::validate_ip(trim($ips[0]));
+                }
+            }
+    
+            if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
+                // Using regex instead of explode() for a smaller code footprint.
+                // Expected format: Forwarded: for=192.0.2.60;proto=http;by=203.0.113.43,for="[2001:db8:cafe::17]:4711"...
+                preg_match(
+                    '/(?<=for\=)[^;,]*/i', // We catch everything on the first "for" entry, and validate later.
+                    sanitize_text_field(wp_unslash($_SERVER['HTTP_FORWARDED'])),
+                    $matches
+                );
+    
+                if (strpos($matches[0] ?? '', '"[') !== false) { // Detect for ipv6, eg "[ipv6]:port".
+                    preg_match(
+                        '/(?<=\[).*(?=\])/i', // We catch only the ipv6 and overwrite $matches.
+                        $matches[0],
+                        $matches
+                    );
+                }
+    
+                if (!empty($matches)) {
+                    return self::validate_ip(trim($matches[0]));
+                }
+            }
+
+            return '0.0.0.0';
+        }
+
+        /**
+         * Uses filter_var() to validate and return ipv4 and ipv6 addresses
+         * Will return 0.0.0.0 if the ip is not valid. This is done to group and still rate limit invalid ips.
+         *
+         * @param string $ip ipv4 or ipv6 ip string.
+         *
+         * @return string
+         */
+        protected static function validate_ip($ip)
+        {
+            $ip = filter_var(
+                $ip,
+                FILTER_VALIDATE_IP,
+                array(FILTER_FLAG_NO_RES_RANGE, FILTER_FLAG_IPV6)
+            );
+
+            return $ip ?: '0.0.0.0';
         }
 
         /**
@@ -1014,7 +1079,7 @@ function maib_payment_gateway_init()
             return add_query_arg(array(
                 'page' => 'wc-settings',
                 'tab' => 'checkout',
-                'section' => self::MOD_ID
+                'section' => self::MAIB_MOD_ID
             ) , admin_url('admin.php'));
         }
 
@@ -1026,7 +1091,7 @@ function maib_payment_gateway_init()
          */
         protected static function get_order_transaction_type($order_id)
         {
-            $transaction_type = get_post_meta($order_id, self::MOD_TRANSACTION_TYPE, true);
+            $transaction_type = get_post_meta($order_id, self::MAIB_MOD_TRANSACTION_TYPE, true);
             return $transaction_type;
         }
 
@@ -1055,7 +1120,7 @@ function maib_payment_gateway_init()
         protected function get_order_description($order)
         {
             $description = sprintf($this->order_template, $order->get_id(), self::get_order_items_summary($order));
-            return apply_filters(self::MOD_ID . '_order_description', $description, $order);
+            return apply_filters(self::MAIB_MOD_ID . '_order_description', $description, $order);
         }
 
         /**
@@ -1109,13 +1174,13 @@ function maib_payment_gateway_init()
                 return $actions;
             }
 
-            if ($maib_order->get_payment_method() !== self::MOD_ID) {
+            if ($maib_order->get_payment_method() !== self::MAIB_MOD_ID) {
                 return $actions;
             }
 
-            $transaction_type = get_post_meta($maib_order->get_id(), self::MOD_TRANSACTION_TYPE, true);
-            if ($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION) {
-                $actions['maib_complete_transaction'] = sprintf(__('Complete Two-Step Payment', 'maib-payment-gateway-for-woocommerce'), self::MOD_TITLE);
+            $transaction_type = get_post_meta($maib_order->get_id(), self::MAIB_MOD_TRANSACTION_TYPE, true);
+            if ($transaction_type === self::MAIB_TRANSACTION_TYPE_AUTHORIZATION) {
+                $actions['maib_complete_transaction'] = sprintf(__('Complete Two-Step Payment', 'maib-payment-gateway-for-woocommerce'), self::MAIB_MOD_TITLE);
             }
 
             return $actions;
