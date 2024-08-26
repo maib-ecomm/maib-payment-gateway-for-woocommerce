@@ -325,7 +325,7 @@ function maib_payment_gateway_init()
                 $product_items[] = array(
                     'id' => $product_id,
                     'name' => substr($product_name, 0, 128) ,
-                    'price' => number_format($product_price, 2, '.', '') ,
+                    'price' => (float) number_format($product_price, 2, '.', '') ,
                     'quantity' => $product_quantity,
                 );
             }
@@ -333,7 +333,7 @@ function maib_payment_gateway_init()
             $nonce = wp_create_nonce('verify_order');
 
             $params = [
-                'amount' => number_format($order->get_total(), 2, '.', ''),
+                'amount' => (float) number_format($order->get_total(), 2, '.', ''),
                 'currency' => $order->get_currency(),
                 'clientIp' => self::get_client_ip(),
                 'language' => self::get_language(),
@@ -342,7 +342,7 @@ function maib_payment_gateway_init()
                 'clientName' => sanitize_text_field($client_name),
                 'email' => sanitize_email($order->get_billing_email()),
                 'phone' => substr(sanitize_text_field($order->get_billing_phone()), 0, 40),
-                'delivery' => number_format($order->get_shipping_total(), 2, '.', ''),
+                'delivery' => (float) number_format($order->get_shipping_total(), 2, '.', ''),
                 'okUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_ok))),
                 'failUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_return_fail))),
                 'callbackUrl' => esc_url(add_query_arg(['nonce' => $nonce], sprintf('%s/wc-api/%s', get_bloginfo('url'), $this->route_callback))),
